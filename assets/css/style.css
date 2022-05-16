@@ -34,7 +34,6 @@ body {
 	outline-color: black;
 }
 
-#CardContainer {
-	font-size: larger;
+img {
+	max-width: 10vw;
 }
-

@@ -69,6 +69,7 @@ var buttonHit = $("#buttonHit");
 var buttonStand = $("#buttonStand");
 var buttonSplit = $("#buttonSplit");
 var buttonDD = $("#buttonDD");
+var buttonShuffle = $("#buttonShuffle");
 
 // display dealer show card
 displayCard(dealerShowCard, dealerCardsEl);
@@ -155,4 +156,8 @@ buttonSplit.on("click", function () {
 
 buttonDD.on("click", function () {
   console.log("DD");
+});
+
+buttonShuffle.on("click", function () {
+  console.log("Shuffle");
 });

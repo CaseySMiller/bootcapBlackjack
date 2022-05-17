@@ -1,7 +1,7 @@
 
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
-var faceDownCard = {cardValue: 0, img: 'https://thumbs.dreamstime.com/z/playing-card-back-side-62x90-mm-17826026.jpg'};
+var faceDownCard = {cardValue: 0, img: 'http://clipart-library.com/images/8cEbeEMLi.png'};
 var dealerDrawCard = {cardValue: 10, img: 'https://deckofcardsapi.com/static/img/KH.png'};
 var dealerShowCard = {cardValue: 5, img: 'https://deckofcardsapi.com/static/img/KH.png'};
 var dealerHoleCard = {cardValue: 10, img: 'https://deckofcardsapi.com/static/img/KH.png'};

@@ -11,6 +11,11 @@ var PlayerSecondCard = {cardValue: 10, img: 'https://deckofcardsapi.com/static/i
 // define elements
 var dealerCardsEl = $('#dealer-cards');
 var playerCardsEl = $('#player-cards');
+// button elements
+var buttonHit = $('#buttonHit')
+var buttonStand = $('#buttonStand')
+var buttonSplit = $('#buttonSplit')
+var buttonDD = $('#buttonDD')
 
 
 // display dealer show card
@@ -87,3 +92,21 @@ function playerSplit() {
 };
 //comment in next line to test split bahavior
 // playerSplit();
+
+
+buttonHit.on("click", function () {
+    console.log("Hit")
+})
+
+buttonStand.on("click", function () {
+    console.log("Stand")
+})
+
+buttonSplit.on("click", function () {
+    console.log("Split")
+})
+
+buttonDD.on("click", function () {
+    console.log("DD")
+})
+

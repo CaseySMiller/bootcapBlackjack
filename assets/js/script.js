@@ -1,3 +1,5 @@
+var dealerCount;
+var playerCount;
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
 var faceDownCard = {
@@ -30,8 +32,10 @@ var shuffleBtn = document.getElementById("buttonShuffle");
 
 var drawBtn = document.getElementById("buttonHit");
 
+var cardValue;
 var deck_id;
 var numOfDecks = 1;
+var drawCardObj;
 
 function shuffleDeck() {
   var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
@@ -86,6 +90,33 @@ function displayCard(whatCard, whereCard) {
   cardDiv.append(showThisCard);
 }
 
+// function to count total in current hand
+function calculateTotal() {
+  var cardValue;
+  switch (shuffleDeck()) {
+    case 0:
+      day = "Sunday";
+      break;
+    case 1:
+      day = "Monday";
+      break;
+    case 2:
+      day = "Tuesday";
+      break;
+    case 3:
+      day = "Wednesday";
+      break;
+    case 4:
+      day = "Thursday";
+      break;
+    case 5:
+      day = "Friday";
+      break;
+    case 6:
+      day = "Saturday";
+  }
+}
+
 //function for dealer to play their hand
 function dealerPlay() {
   // dealers starting count
@@ -111,6 +142,9 @@ function dealerPlay() {
     //call function to compare dealer hand to players
   }
 }
+
+// function for user to play their hand
+function playerPlay() {}
 //comment in next line to test dealer play
 // dealerPlay();
 

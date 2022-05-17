@@ -17,6 +17,8 @@ var buttonStand = $('#buttonStand')
 var buttonSplit = $('#buttonSplit')
 var buttonDD = $('#buttonDD')
 var buttonShuffle = $('#buttonShuffle')
+var buttonModalSubmit = $('#buttonModalSubmit')
+var startModal = $('#startModal')
 
 
 // display dealer show card
@@ -113,4 +115,9 @@ buttonDD.on("click", function () {
 
 buttonShuffle.on("click", function () {
     console.log("Shuffle")
+})
+
+buttonModalSubmit.on('click', function () {
+    console.log("pog")
+    startModal.attr("style", "display: none")
 })

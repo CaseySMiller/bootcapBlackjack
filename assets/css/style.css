@@ -49,13 +49,15 @@ img {
 
 #modalText {
 	font-size: larger;
-	font-weight: 900;
+	font-weight: 1000;
 	background-image: var(--bgColor);
 	height: fit-content;
 	margin-top: 30vh;
-	padding:10px
+	padding:10px;
+	margin: auto;
 }
 
-#submitModal{
-	float: right;
+#buttonModalSubmit{
+	display: flex;
+	margin: auto;
 }

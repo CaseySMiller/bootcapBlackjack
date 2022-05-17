@@ -3,28 +3,28 @@ dealerCount = 0;
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
 var faceDownCard = {
-  cardValue: 0,
-  img: "http://clipart-library.com/images/8cEbeEMLi.png",
+    cardValue: 0,
+    img: "http://clipart-library.com/images/8cEbeEMLi.png",
 };
 var dealerDrawCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
+    cardValue: 10,
+    img: "https://deckofcardsapi.com/static/img/KH.png",
 };
 var dealerShowCard = {
-  cardValue: 5,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
+    cardValue: 5,
+    img: "https://deckofcardsapi.com/static/img/KH.png",
 };
 var dealerHoleCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
+    cardValue: 10,
+    img: "https://deckofcardsapi.com/static/img/KH.png",
 };
 var PlayerFirstCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/8H.png",
+    cardValue: 10,
+    img: "https://deckofcardsapi.com/static/img/8H.png",
 };
 var PlayerSecondCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/8C.png",
+    cardValue: 10,
+    img: "https://deckofcardsapi.com/static/img/8C.png",
 };
 
 // Ryan's addition:
@@ -36,27 +36,27 @@ var deck_id;
 var numOfDecks = 1;
 
 function shuffleDeck() {
-  var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
+    var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
 
-  fetch(requestUrl)
+    fetch(requestUrl)
     .then(function (response) {
-      return response.json();
+        return response.json();
     })
 
     .then(function (data) {
-      deck_id = data.deck_id;
-      localStorage.setItem("deckId", deck_id);
+        deck_id = data.deck_id;
+        localStorage.setItem("deckId", deck_id);
     });
 }
 
 shuffleBtn.addEventListener("click", shuffleDeck);
 
 function drawCard() {
-  var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
+    var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
 
-  fetch(requestUrl)
+    fetch(requestUrl)
     .then(function (response) {
-      return response.json();
+        return response.json();
     })
     .then(function (drawCardObj) {});
 }
@@ -67,11 +67,13 @@ drawBtn.addEventListener("click", drawCard);
 var dealerCardsEl = $("#dealer-cards");
 var playerCardsEl = $("#player-cards");
 // button elements
-var buttonHit = $("#buttonHit");
-var buttonStand = $("#buttonStand");
-var buttonSplit = $("#buttonSplit");
-var buttonDD = $("#buttonDD");
-var buttonShuffle = $("#buttonShuffle");
+var buttonHit = $('#buttonHit')
+var buttonStand = $('#buttonStand')
+var buttonSplit = $('#buttonSplit')
+var buttonDD = $('#buttonDD')
+var buttonShuffle = $('#buttonShuffle')
+var buttonModalSubmit = $('#buttonModalSubmit')
+var startModal = $('#startModal')
 
 
 
@@ -116,13 +118,13 @@ function dealerPlay () {
     };
 
   // dealer busts or stands
-  if (dealerCount > 21) {
+    if (dealerCount > 21) {
     console.log("dealer BUSTS");
     //call player win function
-  } else {
+    } else {
     console.log("dealer stands on " + dealerCount);
     //call function to compare dealer hand to players
-  }
+    }
 }
 //comment in next line to test dealer play
 // dealerPlay();
@@ -173,21 +175,26 @@ function playerSplit() {
 // playerSplit();
 
 buttonHit.on("click", function () {
-  console.log("Hit");
+    console.log("Hit");
 });
 
 buttonStand.on("click", function () {
-  console.log("Stand");
+    console.log("Stand");
 });
 
 buttonSplit.on("click", function () {
-  console.log("Split");
+    console.log("Split");
 });
 
 buttonDD.on("click", function () {
-  console.log("DD");
+    console.log("DD");
 });
 
 buttonShuffle.on("click", function () {
-  console.log("Shuffle");
-});
+    console.log("Shuffle")
+})
+
+buttonModalSubmit.on('click', function () {
+    console.log("pog")
+    startModal.attr("style", "display: none")
+})

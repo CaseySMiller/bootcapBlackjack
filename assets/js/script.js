@@ -46,6 +46,7 @@ function shuffleDeck() {
     .then(function (data) {
         deck_id = data.deck_id;
         localStorage.setItem("deckId", deck_id);
+        console.log(data)
     });
 }
 
@@ -74,7 +75,12 @@ var buttonDD = $('#buttonDD')
 var buttonShuffle = $('#buttonShuffle')
 var buttonModalSubmit = $('#buttonModalSubmit')
 var startModal = $('#startModal')
-
+var deck_1 = $('#deck_1')
+var deck_2 = $('#deck_2')
+var deck_3 = $('#deck_3')
+var deck_4 = $('#deck_4')
+var deck_5 = $('#deck_5')
+var deck_6 = $('#deck_6')
 
 
 // function to display a card
@@ -195,6 +201,41 @@ buttonShuffle.on("click", function () {
 })
 
 buttonModalSubmit.on('click', function () {
-    console.log("pog")
     startModal.attr("style", "display: none")
+    numOfDecks = selectedDeck
+    shuffleDeck()
+})
+
+// Dropdown Menu for decks logic
+
+var selectedDeck
+
+deck_1.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 1
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');})
+deck_2.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 2
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
+})
+deck_3.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 3
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
+})
+deck_4.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 4
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
+})
+deck_5.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 5
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
+})
+deck_6.on('click', function (event) {
+    event.stopPropagation
+    selectedDeck = 6
+    $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
 })

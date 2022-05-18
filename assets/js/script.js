@@ -60,7 +60,9 @@ function drawCard() {
     .then(function (response) {
       return response.json();
     })
-    .then(function (drawCardObj) {});
+    .then(function (drawCardObj) {
+      console.log(drawCardObj);
+    });
 }
 
 drawBtn.addEventListener("click", drawCard);
@@ -91,31 +93,17 @@ function displayCard(whatCard, whereCard) {
 }
 
 // function to count total in current hand
-function calculateTotal() {
-  var cardValue;
-  switch (shuffleDeck()) {
-    case 0:
-      day = "Sunday";
-      break;
-    case 1:
-      day = "Monday";
-      break;
-    case 2:
-      day = "Tuesday";
-      break;
-    case 3:
-      day = "Wednesday";
-      break;
-    case 4:
-      day = "Thursday";
-      break;
-    case 5:
-      day = "Friday";
-      break;
-    case 6:
-      day = "Saturday";
-  }
-}
+// function calculateTotal() {
+//   var cardValue = drawCardObj[0].value;
+//   if ((cardValue === "KING") || (cardValue === "QUEEN") || (cardValue === "JACK")) {
+//       cardValue = 10;
+//     } else if (cardValue === "ACE" && calculateTotal <= 21) {
+//       cardValue = 11;
+//   } else if (cardValue === "ACE" && calculateTotal > 21) {
+// cardValue = 1;
+//   }
+
+// }
 
 //function for dealer to play their hand
 function dealerPlay() {

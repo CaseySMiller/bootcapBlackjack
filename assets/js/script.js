@@ -1,4 +1,8 @@
-dealerCount = 0;
+var dealerCount = 0;
+var playerCount = 0;
+var playerCount2hand = 0;
+var playerCount3hand = 0;
+var playerCount4hand = 0;
 
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
@@ -27,6 +31,24 @@ var PlayerSecondCard = {
     img: "https://deckofcardsapi.com/static/img/8C.png",
 };
 
+// define elements
+var dealerCardsEl = $("#DealerCardContainer");
+var playerCardsEl = $("#PlayerCardContainer");
+// button elements
+var buttonHit = $('#buttonHit')
+var buttonStand = $('#buttonStand')
+var buttonSplit = $('#buttonSplit')
+var buttonDD = $('#buttonDD')
+var buttonShuffle = $('#buttonShuffle')
+var buttonModalSubmit = $('#buttonModalSubmit')
+var startModal = $('#startModal')
+var deck_1 = $('#deck_1')
+var deck_2 = $('#deck_2')
+var deck_3 = $('#deck_3')
+var deck_4 = $('#deck_4')
+var deck_5 = $('#deck_5')
+var deck_6 = $('#deck_6')
+
 // Ryan's addition:
 var shuffleBtn = document.getElementById("buttonShuffle");
 
@@ -34,6 +56,7 @@ var drawBtn = document.getElementById("buttonHit");
 
 var deck_id;
 var numOfDecks = 1;
+var drawCardObj;
 
 function shuffleDeck() {
     var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
@@ -52,35 +75,26 @@ function shuffleDeck() {
 
 shuffleBtn.addEventListener("click", shuffleDeck);
 
-function drawCard() {
+function drawCard(where, addId) {
     var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
 
     fetch(requestUrl)
     .then(function (response) {
         return response.json();
     })
-    .then(function (drawCardObj) {});
-}
-
+    .then(function (data) {
+        drawCardObj = data;
+        return drawCardObj;
+    })
+    .then(function (drawCardObj) {
+        // console.log(drawCardObj.cards[0].image);
+        console.log(where);
+        displayCard(drawCardObj.cards[0].image, where, addId)
+    });
+};
 drawBtn.addEventListener("click", drawCard);
 
-// define elements
-var dealerCardsEl = $("#dealer-cards");
-var playerCardsEl = $("#player-cards");
-// button elements
-var buttonHit = $('#buttonHit')
-var buttonStand = $('#buttonStand')
-var buttonSplit = $('#buttonSplit')
-var buttonDD = $('#buttonDD')
-var buttonShuffle = $('#buttonShuffle')
-var buttonModalSubmit = $('#buttonModalSubmit')
-var startModal = $('#startModal')
-var deck_1 = $('#deck_1')
-var deck_2 = $('#deck_2')
-var deck_3 = $('#deck_3')
-var deck_4 = $('#deck_4')
-var deck_5 = $('#deck_5')
-var deck_6 = $('#deck_6')
+
 
 
 // function to display a card
@@ -89,7 +103,7 @@ function displayCard(whatCard, whereCard, cardID) {
     var cardDiv = $('<div>');
     cardDiv.addClass('flex-column card');
     showThisCard.attr('id', cardID);
-    showThisCard.attr('src', whatCard.img);
+    showThisCard.attr('src', whatCard); //removed .img
     whereCard.append(cardDiv);
     cardDiv.append(showThisCard);
 };
@@ -99,12 +113,11 @@ function displayDealerCards () {
     // empty dealer conatianer
     dealerCardsEl.empty();
     // display dealer hole card
-    displayCard(faceDownCard, dealerCardsEl, 'hole-card');
+    displayCard(faceDownCard.img, dealerCardsEl, 'hole-card');
     // display dealer show card
-    displayCard(dealerShowCard, dealerCardsEl);
+    displayCard(dealerShowCard.img, dealerCardsEl);
 };
-// comment in next line to display dealer cards
-displayDealerCards();
+
 
 //function for dealer to play their hand
 function dealerPlay () {
@@ -171,14 +184,16 @@ function playerSplit() {
     playingColElRight.append(otherHandsRowEl);
     
     //display cards in their respective columns
-    displayCard(PlayerFirstCard, currentHandRowEl);
-    displayCard(PlayerSecondCard, otherHandsRowEl);
+    displayCard(PlayerFirstCard.img, currentHandRowEl);
+    displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
-  //todo:
-  //draw new card and append to correct columns
-}
-//comment in next line to test split bahavior
-// playerSplit();
+    //draw new cards and append to correct columns
+    drawCard(currentHandRowEl);
+    drawCard(otherHandsRowEl);
+
+    
+};
+
 
 buttonHit.on("click", function () {
     console.log("Hit");
@@ -190,6 +205,7 @@ buttonStand.on("click", function () {
 
 buttonSplit.on("click", function () {
     console.log("Split");
+    playerSplit();
 });
 
 buttonDD.on("click", function () {
@@ -204,11 +220,14 @@ buttonModalSubmit.on('click', function () {
     startModal.attr("style", "display: none")
     numOfDecks = selectedDeck
     shuffleDeck()
+    displayDealerCards();
+    //comment in next line to test dealer play
+    // dealerPlay();
 })
 
 // Dropdown Menu for decks logic
 
-var selectedDeck
+var selectedDeck = 1;
 
 deck_1.on('click', function (event) {
     event.stopPropagation

@@ -1,8 +1,20 @@
 var dealerCount = 0;
 var playerCount = 0;
-var playerCount2hand = 0;
-var playerCount3hand = 0;
-var playerCount4hand = 0;
+var playerOtherHands = [
+  [
+    { cardValue: 0, img: "" },
+    { cardValue: 0, img: "" },
+  ], //0 -- other hand for players first split
+  [
+    { cardValue: 0, img: "" },
+    { cardValue: 0, img: "" },
+  ], //1 -- other hand for players second split
+  [
+    { cardValue: 0, img: "" },
+    { cardValue: 0, img: "" },
+  ], //2 -- other hand for playes third split
+];
+console.log();
 
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
@@ -27,7 +39,7 @@ var PlayerFirstCard = {
   img: "https://deckofcardsapi.com/static/img/8H.png",
 };
 var PlayerSecondCard = {
-  cardValue: 10,
+  cardValue: 8,
   img: "https://deckofcardsapi.com/static/img/8C.png",
 };
 
@@ -88,7 +100,11 @@ var drawBtn = document.getElementById("buttonHit");
 var cardValue;
 var deck_id;
 var numOfDecks = 1;
-var drawCardObj;
+var drawCardObj = {};
+
+shuffleBtn.addEventListener("click", shuffleDeck);
+
+drawBtn.addEventListener("click", drawCard);
 
 function shuffleDeck() {
   var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
@@ -105,9 +121,7 @@ function shuffleDeck() {
     });
 }
 
-shuffleBtn.addEventListener("click", shuffleDeck);
-
-function drawCard(where, addId) {
+function drawCard(whereImg, whereVal, addId) {
   var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
 
   fetch(requestUrl)
@@ -116,15 +130,37 @@ function drawCard(where, addId) {
     })
     .then(function (data) {
       drawCardObj = data;
-      return drawCardObj;
-    })
-    .then(function (drawCardObj) {
-      console.log(drawCardObj);
-      console.log(where);
-      // displayCard(drawCardObj.cards[0].image, where, addId);
+      //call function to display the card in whereImg
+      displayCard(drawCardObj.cards[0].image, whereImg, addId);
+      //call function to add the value of the card to whereVal
+      placeValue(whereVal, drawCardObj.cards[0].value);
     });
 }
-drawBtn.addEventListener("click", drawCard);
+
+//function to manipulate the card value taken from drawCard
+//pass an array index or the dealerCount or playerCount variable to where
+function placeValue(where, what) {
+  var thisVal = 0;
+  //convert face cards to 10 and ace to 11
+  if (what == "KING" || what == "QUEEN" || what == "JACK") {
+    thisVal = 10;
+  } else if (what == "ACE") {
+    thisVal = 11;
+  } else {
+    thisVal = what;
+  }
+  // checks if where is an object and stores thisVal to that object if so
+  // otherwise it adds thisVal to dealerCount or playerCount
+  if (typeof where === "object" && where !== null) {
+    where.cardValue = thisVal;
+  } else {
+    where += thisVal;
+    //check if an ace put player over 21 and converts it to a 1 if so
+    if (thisVal === 11 && where > 21) {
+      where -= 10;
+    }
+  }
+}
 
 //function to display a card
 function displayCard(whatCard, whereCard, cardID) {
@@ -132,7 +168,7 @@ function displayCard(whatCard, whereCard, cardID) {
   var cardDiv = $("<div>");
   cardDiv.addClass("flex-column card");
   showThisCard.attr("id", cardID);
-  showThisCard.attr("src", whatCard); //removed .img
+  showThisCard.attr("src", whatCard);
   whereCard.append(cardDiv);
   cardDiv.append(showThisCard);
 }
@@ -173,6 +209,8 @@ function dealerPlay() {
     //call function to compare dealer hand to players
   }
 }
+//comment in next line to test dealer play
+// dealerPlay();
 
 // function for user to play their hand
 function playerPlay() {
@@ -243,9 +281,14 @@ function playerSplit() {
   displayCard(PlayerFirstCard.img, currentHandRowEl);
   displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
-  //draw new cards and append to correct columns
-  drawCard(currentHandRowEl);
-  drawCard(otherHandsRowEl);
+  //todo store value of split card to other cards array
+  playerOtherHands[0][0] = PlayerSecondCard.cardValue;
+
+  //draw new cards and append images to correct columns
+  drawCard(currentHandRowEl, playerCount);
+  drawCard(otherHandsRowEl, playerOtherHands[0][1]);
+
+  // PlayerSecondCard.cardValue = drawCardObj.cards[0].value;
 }
 
 buttonHit.on("click", function () {

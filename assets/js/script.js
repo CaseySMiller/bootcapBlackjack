@@ -78,7 +78,6 @@ function shuffleDeck() {
     .then(function (data) {
         deck_id = data.deck_id;
         localStorage.setItem("deckId", deck_id);
-        console.log(data)
     });
 };
 
@@ -228,11 +227,6 @@ function playerSplit() {
     //draw new cards and append images to correct columns
     drawCard(currentHandRowEl, playerCount);
     drawCard(otherHandsRowEl, playerOtherHands[0][1]);
-    
-
-    // PlayerSecondCard.cardValue = drawCardObj.cards[0].value;
-    
-
 };
 
 
@@ -299,3 +293,6 @@ deck_6.on('click', function (event) {
     selectedDeck = 6
     $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
 })
+
+
+// Jukebox AKA spotify api

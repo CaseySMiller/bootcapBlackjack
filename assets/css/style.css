@@ -7,6 +7,19 @@ body {
 	font-family: 'Smokum', cursive;
 }
 
+.name-plate {
+	/* font-size: 70px; */
+	background-image: var(--bgColor);
+	width: fit-content;
+	/* margin-left: auto; */
+	/* margin-right: auto; */
+	margin-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	outline-style: solid;
+	outline-color: black;
+}
+
 #Intro {
 	margin-top: 10px;
 	font-size: 100px;
@@ -36,4 +49,28 @@ body {
 
 img {
 	max-width: 10vw;
+}
+
+#startModal{
+	background-color: rgba(0, 0, 0, 0.678);
+	display: flex;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+}
+
+#modalText {
+	font-size: larger;
+	font-weight: 1000;
+	background-image: var(--bgColor);
+	height: fit-content;
+	margin-top: 30vh;
+	padding:10px;
+	margin: auto;
+}
+
+#buttonModalSubmit{
+	display: flex;
+	margin: auto;
 }

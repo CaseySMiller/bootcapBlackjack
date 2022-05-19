@@ -63,23 +63,29 @@ var deck_6 = $("#deck_6");
 
 // Ryan's attempt at starting  chip stack
 var chipCount = $("#counter");
-var addButton = $("#add");
-var subtractButton = $("#subtract");
+var increaseButton = $("#add");
+var decreaseButton = $("#subtract");
+var currentWagerAmount = $("#bet");
 
 var count = localStorage.getItem("stack");
+var bet = 0;
 
-chipCount.textContent = `${count} chips`;
+chipCount.text(`${count} chips`);
 
 buttonModalSubmit.on("click", function () {
   if (count === 0) {
     count = 50;
+  } else {
+    count;
   }
 });
 
-addButton.addEventListener("click", function () {
-  if (count < 24) {
-    count++;
-    counter.textContent = count;
+increaseButton.on("click", function () {
+  if (count > 0) {
+    bet++;
+    count--;
+    chipCount.text(`${count} chips`);
+    currentWagerAmount.text(`${bet} on this hand`);
     localStorage.setItem("count", count);
   }
 });

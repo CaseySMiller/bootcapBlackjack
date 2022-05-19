@@ -69,7 +69,6 @@ function shuffleDeck() {
     .then(function (data) {
         deck_id = data.deck_id;
         localStorage.setItem("deckId", deck_id);
-        console.log(data)
     });
 }
 
@@ -191,7 +190,6 @@ function playerSplit() {
     drawCard(currentHandRowEl);
     drawCard(otherHandsRowEl);
 
-    
 };
 
 
@@ -258,3 +256,6 @@ deck_6.on('click', function (event) {
     selectedDeck = 6
     $("#dropdownMenuButton1").html($(this).text()+' <span class="caret"></span>');
 })
+
+
+// Jukebox AKA spotify api

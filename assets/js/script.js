@@ -216,42 +216,48 @@ function displayCard(whatCard, whereCard) {
 }
 
 //function to show dealer cards
-function displayDealerCards() {
-  // empty dealer conatianer
-  dealerCardsEl.empty();
-  // display dealer hole card
-  displayCard(faceDownCard.img, dealerCardsEl);
-  //draw dealers hole card and save img and val to object and update dealerCount
-  drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
-  //draw dealer show card and display and save img and val to object and update dealerCount
-  drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-}
+function displayDealerCards () {
+    // empty dealer conatianer
+    dealerCardsEl.empty();
+    // display dealer hole card
+    displayCard(faceDownCard.img, dealerCardsEl);
+    //draw dealers hole card and save img and val to object and update dealerCount
+    drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
+    //draw dealer show card and display and save img and val to object and update dealerCount
+    drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
+
+    console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
+};
+
 
 //function for dealer to play their hand
-function dealerPlay() {
-  // dealers starting count
-  dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
-  var dealerStand = false;
-  var holeCard = $("#hole-card");
-  // display dealer hole card
-  // displayCard(dealerHoleCard, dealerCardsEl);
-  holeCard.attr("src", dealerHoleCard.img);
-
-  // draw cards until dealer has 17 or greater
-  while (dealerCount.val < 17) {
-    // call draw card api function populates dealerDrawCard
-    dealerCount.val = dealerCount.val + dealerDrawCard.cardValue;
-    displayCard(dealerDrawCard, dealerCardsEl);
-  }
-  // dealer busts or stands
-  if (dealerCount > 21) {
+function dealerPlay () {
+    // dealers starting count
+    dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
+    var dealerStand = false;
+    var holeCard = dealerCardsEl.children([0]).children([0]);
+    // display dealer hole card
+    // displayCard(dealerHoleCard, dealerCardsEl); 
+    console.log(dealerHoleCard.img);
+    holeCard.attr('src', dealerHoleCard.img);
+    
+    // draw cards until dealer has 17 or greater
+    while (dealerCount.val < 17) {
+        // call draw card api function populates dealerDrawCard
+        ;
+        delay(1000).then(() => drawCard(dealerCardsEl, nada, dealerCount,));
+    };
+    // dealer busts or stands
+    if (dealerCount > 21) {
     console.log("dealer BUSTS");
     //call player win function
   } else {
     console.log("dealer stands on " + dealerCount.val);
+    dealerStand = true;
     //call function to compare dealer hand to players
-  }
-}
+  };
+};
+
 //comment in next line to test dealer play
 // dealerPlay();
 
@@ -286,54 +292,63 @@ function dealerPlay() {
 // playerPlay();
 //comment in next line to test dealer play
 // dealerPlay();
+
+
 //this is a testing function only and is not used anywhere in the aplication
-function testThis(element) {
-  dealerShowCard.cardValue = "foo";
-  console.log(dealerShowCard);
-}
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+    };
+
+
 
 //function to handle player splitting cards
 function playerSplit() {
-  splitCount++;
-  // check if player has already split 3 times this hand and return out of function if so
-  if (splitCount > 2) {
-    alert("too many splitty for you"); //change this to warning modal
-    return;
-  } else if (splitCount === 0) {
-    // set up columns if this is the first split
-    //clear player cards row
-    playerCardsEl.empty();
-    // split player row into current playing column on left and split hand in small col on right.
-    playingColElLeft = $("<div>");
-    playingColElRight = $("<div>");
-    playingColElLeft.addClass("col-8");
-    playingColElLeft.attr("id", "current-hand-col");
-    playerCardsEl.append(playingColElLeft);
-    playingColElRight.addClass("col-4");
-    playingColElRight.attr("id", "other-hands-col");
-    playerCardsEl.append(playingColElRight);
-    // append row for current hand title to left playing area column
-    var currentHandTitleRowEl = $("<div>");
-    currentHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
-    currentHandTitleRowEl.text("Current Hand");
-    playingColElLeft.append(currentHandTitleRowEl);
-    // append row for current hand to left playing area column
-    currentHandRowEl = $("<div>");
-    currentHandRowEl.addClass("d-flex flex-row");
-    playingColElLeft.append(currentHandRowEl);
-    // append row for current hand title to left playing area column
-    var otherHandTitleRowEl = $("<div>");
-    otherHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
-    otherHandTitleRowEl.text("Next Hands");
-    playingColElRight.append(otherHandTitleRowEl);
-  } else {
-    currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
-  }
-  //append row for other hands
-  otherHandsRowEl = $("<div>");
-  otherHandsRowEl.addClass("d-flex flex-row");
-  otherHandsRowEl.attr("id", "splitHand" + splitCount);
-  playingColElRight.append(otherHandsRowEl);
+    splitCount ++;
+    // check if player has already split 3 times this hand and return out of function if so
+    if (splitCount > 2) {
+        alert ('too many splitty for you'); //change this to warning modal
+        return;
+    } else if (splitCount === 0) { // set up columns if this is the first split
+        //clear player cards row
+        playerCardsEl.empty();
+        // split player row into current playing column on left and split hand in small col on right.
+        playingColElLeft = $('<div>');
+        playingColElRight = $('<div>');
+        playingColElLeft.addClass('col-8');
+        playingColElLeft.attr('id', 'current-hand-col');
+        playerCardsEl.append(playingColElLeft);
+        playingColElRight.addClass('col-4');
+        playingColElRight.attr('id', 'other-hands-col');
+        playerCardsEl.append(playingColElRight);
+        // append row for current hand title to left playing area column
+        var currentHandTitleRowEl = $('<div>');
+        currentHandTitleRowEl.addClass('d-flex flex-row name-plate fs-2 fw-b m-2');
+        currentHandTitleRowEl.text('Current Hand');
+        playingColElLeft.append(currentHandTitleRowEl);
+        // append row for current hand to left playing area column
+        currentHandRowEl = $('<div>');
+        currentHandRowEl.addClass('d-flex flex-row');
+        playingColElLeft.append(currentHandRowEl);
+        // update wherePlay variable to play in this new row
+        wherePlay = currentHandRowEl;
+        // append row for current hand title to left playing area column
+        var otherHandTitleRowEl = $('<div>');
+        otherHandTitleRowEl.addClass('d-flex flex-row name-plate fs-2 fw-b m-2');
+        otherHandTitleRowEl.text('Next Hands');
+        playingColElRight.append(otherHandTitleRowEl);
+    } else {
+        currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
+    };
+    //append row for other hands
+    otherHandsRowEl = $('<div>');
+    otherHandsRowEl.addClass('d-flex flex-row');
+    otherHandsRowEl.attr('id', 'splitHand' + splitCount);
+    playingColElRight.append(otherHandsRowEl);
+    
+    //display cards in their respective columns
+    displayCard(PlayerFirstCard.img, currentHandRowEl);
+    displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
   //display cards in their respective columns
   displayCard(PlayerFirstCard.img, currentHandRowEl);
@@ -374,12 +389,13 @@ buttonHit.on("click", function () {
 });
 
 buttonStand.on("click", function () {
-  console.log("Stand");
+    console.log("Stand");
+    // dealerPlay();  //this is here for testing only
+    // delay(1000).then(() => console.log('ran after 1 second1 passed'));
 });
 
 buttonSplit.on("click", function () {
-  console.log("Split");
-  playerSplit();
+    playerSplit();
 });
 
 buttonDD.on("click", function () {

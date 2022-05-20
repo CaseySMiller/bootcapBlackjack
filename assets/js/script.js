@@ -62,6 +62,7 @@ var deck_5 = $("#deck_5");
 var deck_6 = $("#deck_6");
 
 // Ryan's attempt at starting  chip stack
+var confirmButton = $("#confirmWager");
 var chipCount = $("#counter");
 var increaseButton = $("#add");
 var decreaseButton = $("#subtract");
@@ -74,7 +75,6 @@ var bet = 0;
 chipCount.text(`${count} chips`);
 
 getNewChips.on("click", function () {
-  alert("fuck you");
   if (count === 0) {
     count = 50;
     localStorage.setItem("stack", count);
@@ -102,10 +102,21 @@ increaseButton.on("click", function () {
 
 decreaseButton.on("click", function () {
   if (count >= 0 && bet > 0) {
-    count--;
+    count++;
+    bet--;
     counter.textContent = count;
+    currentWagerAmount.text(`${bet} on this hand`);
     localStorage.setItem("stack", count);
   }
+});
+
+function startDeal() {
+  displayDealerCards();
+  // playerPlay();
+}
+
+confirmButton.on("click", function () {
+  startDeal();
 });
 
 // Ryan's addition:
@@ -457,19 +468,18 @@ deck_6.on("click", function (event) {
 
 // Invalid play modal popup
 
-var invalidConfirm = $('#invalidConfirm')
-var invalidAction = $('#invalidAction')
+var invalidConfirm = $("#invalidConfirm");
+var invalidAction = $("#invalidAction");
 
-invalidConfirm.on('click', function () {
-    invalidAction.attr("style", "display: none")
-})
+invalidConfirm.on("click", function () {
+  invalidAction.attr("style", "display: none");
+});
 
 // Function to call invalid play modal
 
 function invalidActionDisplay() {
-    invalidAction.attr("style", "display: flex")
+  invalidAction.attr("style", "display: flex");
 }
-
 
 // Buttons for chips and chip count.
 

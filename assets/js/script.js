@@ -161,6 +161,8 @@ function displayDealerCards () {
     drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
     //draw dealer show card and display and save img and val to object and update dealerCount
     drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
+
+    console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
 };
 
 
@@ -169,16 +171,17 @@ function dealerPlay () {
     // dealers starting count
     dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
     var dealerStand = false;
-    var holeCard = $('#hole-card');
+    var holeCard = dealerCardsEl.children([0]).children([0]);
     // display dealer hole card
     // displayCard(dealerHoleCard, dealerCardsEl); 
+    console.log(dealerHoleCard.img);
     holeCard.attr('src', dealerHoleCard.img);
     
     // draw cards until dealer has 17 or greater
     while (dealerCount.val < 17) {
         // call draw card api function populates dealerDrawCard
-        dealerCount.val = dealerCount.val + dealerDrawCard.cardValue;
-        displayCard(dealerDrawCard, dealerCardsEl);
+        drawCard(dealerCardsEl, nada, dealerCount,);
+        delay(1000).then(() => console.log(dealerCount.val));
     };
     // dealer busts or stands
     if (dealerCount > 21) {
@@ -186,15 +189,17 @@ function dealerPlay () {
     //call player win function
     } else {
     console.log("dealer stands on " + dealerCount.val);
+    dealerStand = true;
     //call function to compare dealer hand to players
     }
 };
 
 //this is a testing function only and is not used anywhere in the aplication
-function testThis (element) {
-    dealerShowCard.cardValue = 'foo';
-    console.log(dealerShowCard);
-};
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+
 
 //function to handle player splitting cards
 function playerSplit() {
@@ -224,6 +229,8 @@ function playerSplit() {
         currentHandRowEl = $('<div>');
         currentHandRowEl.addClass('d-flex flex-row');
         playingColElLeft.append(currentHandRowEl);
+        // update wherePlay variable to play in this new row
+        wherePlay = currentHandRowEl;
         // append row for current hand title to left playing area column
         var otherHandTitleRowEl = $('<div>');
         otherHandTitleRowEl.addClass('d-flex flex-row name-plate fs-2 fw-b m-2');
@@ -278,10 +285,11 @@ buttonHit.on("click", function () {
 
 buttonStand.on("click", function () {
     console.log("Stand");
+    dealerPlay();
+    // delay(1000).then(() => console.log('ran after 1 second1 passed'));
 });
 
 buttonSplit.on("click", function () {
-    console.log("Split");
     playerSplit();
 });
 

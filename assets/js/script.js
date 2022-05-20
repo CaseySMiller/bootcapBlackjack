@@ -66,35 +66,45 @@ var chipCount = $("#counter");
 var increaseButton = $("#add");
 var decreaseButton = $("#subtract");
 var currentWagerAmount = $("#bet");
-
-var count = localStorage.getItem("stack");
+var getNewChips = $("#newChips");
+var count = 0;
+var stack = localStorage.getItem("stack");
 var bet = 0;
 
 chipCount.text(`${count} chips`);
 
-buttonModalSubmit.on("click", function () {
+getNewChips.on("click", function () {
+  alert("fuck you");
   if (count === 0) {
     count = 50;
+    localStorage.setItem("stack", count);
+    chipCount.text(`${count} chips`);
   } else {
     count;
   }
 });
 
 increaseButton.on("click", function () {
-  if (count > 0) {
+  if (count >= 1) {
     bet++;
     count--;
     chipCount.text(`${count} chips`);
     currentWagerAmount.text(`${bet} on this hand`);
-    localStorage.setItem("count", count);
+    localStorage.setItem("stack", count);
+  } else if (count === 0 && bet >= 1) {
+    alert(`You have no more chips to wager!`);
+  } else {
+    $("<button>Request More Chips</button>").on("click", function () {
+      count = 50;
+    });
   }
 });
 
-subtractButton.addEventListener("click", function () {
-  if (count > 0) {
+decreaseButton.on("click", function () {
+  if (count >= 0 && bet > 0) {
     count--;
     counter.textContent = count;
-    localStorage.setItem("count", count);
+    localStorage.setItem("stack", count);
   }
 });
 
@@ -219,34 +229,34 @@ function dealerPlay() {
 // dealerPlay();
 
 // function for user to play their hand
-function playerPlay() {
-  var firstCard = $("#firstDealt");
-  var secondCard = $("#secondDealt");
-  playerCardsEl.empty();
+// function playerPlay() {
+//   var firstCard = $("#firstDealt");
+//   var secondCard = $("#secondDealt");
+//   playerCardsEl.empty();
 
-  drawCard(playerCardsEl, "firstCard");
-  console.log(firstCard);
-  drawCard(playerCardsEl, "secondCard");
-  console.log(secondCard);
-  playerCount = PlayerFirstCard.cardValue + PlayerSecondCard.cardValue;
+//   drawCard(playerCardsEl, "firstCard");
+//   console.log(firstCard);
+//   drawCard(playerCardsEl, "secondCard");
+//   console.log(secondCard);
+//   playerCount = PlayerFirstCard.cardValue + PlayerSecondCard.cardValue;
 
-  if (playerCount === 21) {
-    console.log(
-      "Player wins with Blackjack and is paid out 3/2 on their wager"
-    ); // run player wins function?
-  } else if (PlayerFirstCard.cardValue === PlayerSecondCard.cardValue) {
-    console.log("Would you like to split your hand?"); // run playerSplit()?
-  } else if (currentHandTotal < 21) {
-    // this function needs to be created
-    console.log("Would you like to hit or stand?"); // should this be an alert or modal?
-  } else {
-    console.log("Player stands on " + dealerCount);
-    //call function to compare dealer hand to players
-  }
+//   if (playerCount === 21) {
+//     console.log(
+//       "Player wins with Blackjack and is paid out 3/2 on their wager"
+//     ); // run player wins function?
+//   } else if (PlayerFirstCard.cardValue === PlayerSecondCard.cardValue) {
+//     console.log("Would you like to split your hand?"); // run playerSplit()?
+//   } else if (currentHandTotal < 21) {
+//     // this function needs to be created
+//     console.log("Would you like to hit or stand?"); // should this be an alert or modal?
+//   } else {
+//     console.log("Player stands on " + dealerCount);
+//     //call function to compare dealer hand to players
+//   }
 
-  // displayCard(PlayerFirstCard, playerCardsEl, cardID);
-}
-playerPlay();
+//   // displayCard(PlayerFirstCard, playerCardsEl, cardID);
+// }
+// playerPlay();
 //comment in next line to test dealer play
 // dealerPlay();
 

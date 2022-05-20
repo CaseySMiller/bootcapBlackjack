@@ -241,7 +241,6 @@ function playerSplit() {
     //fix this Casey!!!!!!!!!!!!!!!!!!
     drawCard(currentHandRowEl, playerCount); //needs to be fixed for new drawCard function
     drawCard(otherHandsRowEl, playerOtherHands[0][1]);
-<<<<<<< HEAD
     
     // TODO: 
         // call play function
@@ -253,8 +252,6 @@ function playerSplit() {
 
     
 
-=======
->>>>>>> fe49250957d388ac0d6e07adab4da51704bbfc15
 };
 
 

@@ -174,10 +174,13 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
       //use the value of the card in whereValuse
       useValue(whereValUse, whereValStore, drawCardObj.cards[0].value);
       // store the value of the drawn card to whereValStore
-      whereValStore.cardValue = drawCardObj.cards[0].value;
+      if (whereValStore == "nada" || typeof(whereValStore) == "undefined") {
+    } else {
+        whereValStore.cardValue = drawCardObj.cards[0].value;
+    };
       // return;
     });
-}
+};
 
 //function to manipulate the card value taken from drawCard
 //pass an array index or the dealerCount or playerCount variable to where
@@ -191,15 +194,24 @@ function useValue(whereUse, whereStore, what) {
   } else {
     thisVal = parseInt(what, 10);
   }
+// check if whereStore is not defined
+  if (whereStore == "nada" || typeof(whereStore) == "undefined") {
+    } else {
+        //store thisVal to whereStore
+        whereStore.cardValue = thisVal;
+    };
+//check if whereUse is not defined
+  if (whereUse == "nada" || typeof(whereUse) == "undefined") {
+    } else {
+        //use thisVal in whereUse
+        whereUse.val += thisVal;
+    };
 
-  //store thisVal to whereStore
-  whereStore.cardValue = thisVal;
-  //use thisVal in whereUse
-  whereUse.val += thisVal;
-  //check if an ace put player over 21 and if so makes the ace value=1
+      //check if an ace put player over 21 and if so makes the ace value=1
   if (thisVal === 11 && whereUse.val > 21) {
     whereUse.val -= 10;
   }
+  return whereUse;
 }
 
 // function to display a card and append it to the HTML in whereCard location
@@ -213,7 +225,7 @@ function displayCard(whatCard, whereCard) {
   showThisCard.attr("src", whatCard);
   whereCard.append(cardDiv);
   cardDiv.append(showThisCard);
-}
+};
 
 //function to show dealer cards
 function displayDealerCards () {
@@ -232,31 +244,74 @@ function displayDealerCards () {
 
 //function for dealer to play their hand
 function dealerPlay () {
-    // dealers starting count
-    dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
     var dealerStand = false;
     var holeCard = dealerCardsEl.children([0]).children([0]);
-    // display dealer hole card
-    // displayCard(dealerHoleCard, dealerCardsEl); 
-    console.log(dealerHoleCard.img);
     holeCard.attr('src', dealerHoleCard.img);
-    
-    // draw cards until dealer has 17 or greater
-    while (dealerCount.val < 17) {
-        // call draw card api function populates dealerDrawCard
-        ;
-        delay(1000).then(() => drawCard(dealerCardsEl, nada, dealerCount,));
+    // dealers starting count
+    // dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
+    function countDealer() {
+        useValue(dealerCount, nada, dealerHoleCard)
+        .then (
+            useValue(dealerCount, nada, dealerShowCard)
+        ).then (
+            console.log(dealerCount)
+        ).then (
+            function delayDraw() { 
+                setTimeout(function() {   
+                    console.log(dealerCount.val);
+                    if (dealerCount.val < 17) {
+                        drawCard(dealerCardsEl, nada, dealerCount);       
+                        console.log(dealerCount.val);
+                        delayDraw();
+                    };
+                }, 1500);
+                return dealerCount;
+            }
+        ).then (
+            function dealerOutcome() {
+                console.log('dealerOutcome');
+                // dealer busts or stands
+                if (dealerCount > 21) {
+                    console.log("dealer BUSTS");
+                    //call player win function
+                } else {
+                    console.log("dealer stands on " + dealerCount.val);
+                    dealerStand = true;
+                    //call function to compare dealer hand to players
+                };
+                return dealerCount;
+            }
+        ).then (
+            function () {
+                console.log(dealerCount)
+                return dealerCount;
+            }
+        )
     };
-    // dealer busts or stands
-    if (dealerCount > 21) {
-    console.log("dealer BUSTS");
-    //call player win function
-  } else {
-    console.log("dealer stands on " + dealerCount.val);
-    dealerStand = true;
-    //call function to compare dealer hand to players
-  };
+    countDealer();
+            // display dealer hole card
+    // displayCard(dealerHoleCard, dealerCardsEl); 
+    // console.log(dealerHoleCard.img);
+    
+
+    // delayDraw();
+
+
+
 };
+
+var i = 1;                  //  set your counter to 1
+
+function myLoop() {         //  create a loop function
+  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+    console.log('hello');   //  your code here
+    i++;                    //  increment the counter
+    if (i < 10) { 
+        console.log(i);          //  if the counter < 10, call the loop function
+      myLoop();             //  ..  again which will trigger another 
+    }                       //  ..  setTimeout()
+  }, 3000)
+}
 
 //comment in next line to test dealer play
 // dealerPlay();
@@ -296,9 +351,6 @@ function dealerPlay () {
 
 //this is a testing function only and is not used anywhere in the aplication
 
-function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-    };
 
 
 
@@ -391,7 +443,7 @@ buttonHit.on("click", function () {
 buttonStand.on("click", function () {
     console.log("Stand");
     // dealerPlay();  //this is here for testing only
-    // delay(1000).then(() => console.log('ran after 1 second1 passed'));
+    // myLoop();
 });
 
 buttonSplit.on("click", function () {

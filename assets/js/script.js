@@ -375,6 +375,22 @@ deck_6.on("click", function (event) {
   );
 });
 
+// Invalid play modal popup
+
+var invalidConfirm = $('#invalidConfirm')
+var invalidAction = $('#invalidAction')
+
+invalidConfirm.on('click', function () {
+    invalidAction.attr("style", "display: none")
+})
+
+// Function to call invalid play modal
+
+function invalidActionDisplay() {
+    invalidAction.attr("style", "display: flex")
+}
+
+
 // Buttons for chips and chip count.
 
 // var chipCount = $("#counter"); - current stack of chips

@@ -191,8 +191,6 @@ function testThis (element) {
     console.log(dealerShowCard);
 };
 
-
-
 //function to handle player splitting cards
 function playerSplit() {
     console.log('player splits');
@@ -237,26 +235,19 @@ function playerSplit() {
     //draw new cards and append images to correct columns
     //adds card values to their respective places and calculates playerCount for current hand
 
-
     //fix this Casey!!!!!!!!!!!!!!!!!!
     drawCard(currentHandRowEl, playerCount); //needs to be fixed for new drawCard function
     drawCard(otherHandsRowEl, playerOtherHands[0][1]);
-<<<<<<< HEAD
     
     // TODO: 
         // call play function
         // add if statement to check if split has happened before
-            // if more than third split modal warning
-            // if so adjust how split cards are handled
+        // if more than third split modal warning
+        // if so adjust how split cards are handled
         // call function to pull more player chips (may be in player play function)
         // add check for if player can afford the split and make modal warning if not
 
-    
-
-=======
->>>>>>> fe49250957d388ac0d6e07adab4da51704bbfc15
 };
-
 
 buttonHit.on("click", function () {
     console.log("Hit");
@@ -324,4 +315,11 @@ deck_6.on('click', function (event) {
 })
 
 
-// Jukebox AKA spotify api
+
+// Buttons for chips and chip count.
+
+// var chipCount = $("#counter"); - current stack of chips
+// var increaseButton = $("#add"); - increasing your bet
+// var decreaseButton = $("#subtract"); - decreasing bet
+// var currentWagerAmount = $("#bet"); - current bet
+// var getNewChips = $("#newChips"); - only should be needed at beginning game and then when the stack hits zero

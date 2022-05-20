@@ -1,6 +1,7 @@
 var nada = "nada"; // throwaway parameter for drawCard function
 var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
+var splitCount = -1;
 var playerOtherHands = [
   [
     { cardValue: 0, img: "" },
@@ -35,7 +36,7 @@ var dealerHoleCard = {
   img: "https://deckofcardsapi.com/static/img/KH.png",
 };
 var PlayerFirstCard = {
-  cardValue: 10,
+  cardValue: 8,
   img: "https://deckofcardsapi.com/static/img/8H.png",
 };
 var PlayerSecondCard = {
@@ -43,9 +44,17 @@ var PlayerSecondCard = {
   img: "https://deckofcardsapi.com/static/img/8C.png",
 };
 
+// declare elements for splitting hands
+var otherHandsRowEl;
+var playingColElRight;
+var playingColElLeft;
+var currentHandRowEl;
+
 // define elements
 var dealerCardsEl = $("#DealerCardContainer");
 var playerCardsEl = $("#PlayerCardContainer");
+// variable to tell playHand and doubleDown functions where to place cards
+var wherePlay = playerCardsEl;
 // button elements
 var buttonHit = $("#buttonHit");
 var buttonStand = $("#buttonStand");
@@ -216,8 +225,6 @@ function displayDealerCards() {
   drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
   //draw dealer show card and display and save img and val to object and update dealerCount
   drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-  console.log(dealerShowCard);
-  console.log(dealerHoleCard);
 }
 
 //function for dealer to play their hand
@@ -287,48 +294,80 @@ function testThis(element) {
 
 //function to handle player splitting cards
 function playerSplit() {
-  console.log("player splits");
-  //clear player cards row
-  playerCardsEl.empty();
-  // split player row into current playing column on left and split hand in small col on right.
-  var playingColElLeft = $("<div>");
-  var playingColElRight = $("<div>");
-  playingColElLeft.addClass("col-8");
-  playingColElLeft.attr("id", "current-hand-col");
-  playerCardsEl.append(playingColElLeft);
-  playingColElRight.addClass("col-4");
-  playingColElRight.attr("id", "other-hands-col");
-  playerCardsEl.append(playingColElRight);
-  // append row for current hand title to left playing area column
-  var currentHandTitleRowEl = $("<div>");
-  currentHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
-  currentHandTitleRowEl.text("Current Hand");
-  playingColElLeft.append(currentHandTitleRowEl);
-  // append row for current hand to left playing area column
-  var currentHandRowEl = $("<div>");
-  currentHandRowEl.addClass("d-flex flex-row");
-  playingColElLeft.append(currentHandRowEl);
-  // append row for current hand title to left playing area column
-  var otherHandTitleRowEl = $("<div>");
-  otherHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
-  otherHandTitleRowEl.text("Next Hands");
-  playingColElRight.append(otherHandTitleRowEl);
+  splitCount++;
+  // check if player has already split 3 times this hand and return out of function if so
+  if (splitCount > 2) {
+    alert("too many splitty for you"); //change this to warning modal
+    return;
+  } else if (splitCount === 0) {
+    // set up columns if this is the first split
+    //clear player cards row
+    playerCardsEl.empty();
+    // split player row into current playing column on left and split hand in small col on right.
+    playingColElLeft = $("<div>");
+    playingColElRight = $("<div>");
+    playingColElLeft.addClass("col-8");
+    playingColElLeft.attr("id", "current-hand-col");
+    playerCardsEl.append(playingColElLeft);
+    playingColElRight.addClass("col-4");
+    playingColElRight.attr("id", "other-hands-col");
+    playerCardsEl.append(playingColElRight);
+    // append row for current hand title to left playing area column
+    var currentHandTitleRowEl = $("<div>");
+    currentHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
+    currentHandTitleRowEl.text("Current Hand");
+    playingColElLeft.append(currentHandTitleRowEl);
+    // append row for current hand to left playing area column
+    currentHandRowEl = $("<div>");
+    currentHandRowEl.addClass("d-flex flex-row");
+    playingColElLeft.append(currentHandRowEl);
+    // append row for current hand title to left playing area column
+    var otherHandTitleRowEl = $("<div>");
+    otherHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
+    otherHandTitleRowEl.text("Next Hands");
+    playingColElRight.append(otherHandTitleRowEl);
+  } else {
+    currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
+  }
   //append row for other hands
-  var otherHandsRowEl = $("<div>");
+  otherHandsRowEl = $("<div>");
   otherHandsRowEl.addClass("d-flex flex-row");
+  otherHandsRowEl.attr("id", "splitHand" + splitCount);
   playingColElRight.append(otherHandsRowEl);
 
   //display cards in their respective columns
   displayCard(PlayerFirstCard.img, currentHandRowEl);
   displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
-  //todo store value of split card to other cards array
-  playerOtherHands[0][0] = PlayerSecondCard.cardValue;
+  //store values of split card to other cards array
+  playerOtherHands[splitCount][0].cardValue = PlayerSecondCard.cardValue;
+  playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
+  playerCount = PlayerFirstCard.cardValue;
 
   //draw new cards and append images to correct columns
-  drawCard(currentHandRowEl, playerCount);
-  drawCard(otherHandsRowEl, playerOtherHands[0][1]);
+  //adds card values to their respective places and calculates playerCount for current hand
+  drawCard(currentHandRowEl, PlayerSecondCard, playerCount, PlayerSecondCard);
+  drawCard(
+    otherHandsRowEl,
+    playerOtherHands[splitCount][1],
+    nada,
+    playerOtherHands[splitCount][1]
+  );
+
+  // TODO:
+  // call play function
+  // call function to pull more player chips (maybe in player play function)
 }
+
+// function for doubling down
+function doubleDown() {
+  console.log("Double down dummy!");
+  // double bet
+}
+// draw only
+drawCard(wherePlay, nada, playerCount, nada);
+
+// dealer play and check win/loss
 
 console.log("player splits");
 //clear player cards row
@@ -400,10 +439,7 @@ buttonSplit.on("click", function () {
 });
 
 buttonDD.on("click", function () {
-  console.log("DD");
-
-  console.log("DD");
-  testThis(); //this is here for testing only
+  doubleDown();
 });
 
 buttonShuffle.on("click", function () {
@@ -413,7 +449,7 @@ buttonShuffle.on("click", function () {
 buttonModalSubmit.on("click", function () {
   startModal.attr("style", "display: none");
   numOfDecks = selectedDeck;
-  shuffleDeck();
+  // shuffleDeck()
   displayDealerCards();
   //comment in next line to test dealer play
   // dealerPlay();

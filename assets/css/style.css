@@ -52,15 +52,20 @@ img {
 }
 
 #startModal{
+	z-index: 2;
 	background-color: rgba(0, 0, 0, 0.678);
 	display: flex;
 	position: absolute;
-	height: 100%;
-	width: 100%;
+	margin-top: -1vh;
+	height: 125vh;
+	width: 100vw;
 	justify-content: center;
 }
 
 #modalText {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	font-size: larger;
 	font-weight: 1000;
 	background-image: var(--bgColor);
@@ -73,4 +78,45 @@ img {
 #buttonModalSubmit{
 	display: flex;
 	margin: auto;
+}
+
+footer {
+	height: fit-content;
+}
+
+#jukeboxEntry {
+	font-size: small;
+	margin-top: 0;
+	margin-bottom: 5px;
+	width: 80%;
+}
+
+#jukeboxButton {
+	position: absolute;
+	width: 14%;
+	font-size: 16px;
+	padding-right: 26px;
+	align-self: flex-end;
+	margin-top: 44%;
+}
+
+#Jukebox {
+	z-index: 1;
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	font-size: small;
+	display: flex;
+	flex-direction: column;
+	font-size: 70px;
+	background-image: var(--bgColor);
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	outline-style: solid;
+	outline-color: black;
+	align-self:flex-end ;
 }

@@ -22,7 +22,7 @@ body {
 
 #Intro {
 	margin-top: 10px;
-	font-size: 100px;
+	font-size: 10vw;
 	font-weight: 900;
 	background-image: var(--bgColor);
 	width: fit-content;
@@ -35,7 +35,7 @@ body {
 }
 
 #NamePlate {
-	font-size: 70px;
+	font-size: 7vw;
 	background-image: var(--bgColor);
 	width: fit-content;
 	margin-left: auto;
@@ -56,7 +56,7 @@ img {
 	background-color: rgba(0, 0, 0, 0.678);
 	display: flex;
 	position: absolute;
-	margin-top: -1vh;
+	margin-top: -3vh;
 	height: 125vh;
 	width: 100vw;
 	justify-content: center;
@@ -103,7 +103,7 @@ footer {
 #Jukebox {
 	z-index: 1;
 	position: fixed;
-	bottom: 10px;
+	top: 10px;
 	left: 10px;
 	font-size: small;
 	display: flex;
@@ -119,4 +119,46 @@ footer {
 	outline-style: solid;
 	outline-color: black;
 	align-self:flex-end ;
+}
+
+#chipDisplay {
+	font-size: 7vw;
+	font-size: large;
+	padding: 8px;
+	display: flex;
+	background-image: var(--bgColor);
+	margin: auto;
+	width: min-content;
+	flex-direction: row;
+	width: fit-content;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 2px;
+}
+
+#invalidAction {
+	display: flex;
+	position: absolute;
+	z-index: 2;
+	width: 100vw;
+	height: 125vh;
+	margin-top: -2vh;
+	background-color: rgba(0, 0, 0, 0.678);
+	align-items: center;
+	justify-content: center;
+
+}
+
+#invalidActionTxt{
+	background-image: var(--bgColor);
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+}
+
+
+@media screen and (max-width: 904px) {
+	#Jukebox {
+		display: none;
+	}
 }

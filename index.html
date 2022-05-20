@@ -24,6 +24,14 @@
 </head>
 
 <body>
+    <div id="invalidAction" style="display: none;">
+        <div id="invalidActionTxt">
+            Invalid Play
+            <button id="invalidConfirm">
+                O.K.
+            </button>
+        </div>
+    </div>
     <div id="startModal">
         <div id="modalText">
                 <div class="dropdown">
@@ -44,15 +52,13 @@
             <button id="buttonModalSubmit">✔️</button>
         </div>
     </div>
-
-    <header id="Intro">
+    <header id="Intro" class="d-flex justify-content-center flex-row">
         BLACKJACK!
     </header>
     <main class="container">
         <div id="NamePlate">
             Dealer Cards
         </div>
-
         <div class="d-flex justify-content-center flex-row p-2" id="DealerCardContainer">
                 <div class="flex-column">
                     <img src="http://clipart-library.com/images/8cEbeEMLi.png" alt="">
@@ -79,7 +85,7 @@
                 Shuffle
             </button>
         </div>
-        <div id="NamePlate">
+        <div class="d-flex justify-content-center flex-row" id="NamePlate">
             Your Cards
         </div>
         <div class="d-flex justify-content-center flex-row p-2" id="PlayerCardContainer">
@@ -89,19 +95,39 @@
             <div class="flex-column">
                 <img src="http://clipart-library.com/images/8cEbeEMLi.png" alt="">
             </div>
-                <!-- <div>
-                    <img src="http://clipart-library.com/images/8cEbeEMLi.png" alt="">
-                </div>
-                <div>
-                    <img src="http://clipart-library.com/images/8cEbeEMLi.png" alt="">
-                </div> -->
         </div>
+    <div id="chipDisplay">
+        <div class="row">
+            <p>
+                Chips: <span id="chipCount">0</span>
+            </p>
+            <p>
+                Wager: <span id="currentWagerAmount">0</span>
+            </p>
+        </div>
+        <div>
+            <button id="increaseButton">
+            +
+            </button>
+            <button id="decreaseButton">
+            -
+            </button>
+        <div></div>
+            <button id="getNewChips">
+            Get More Chips
+            </button>
+        <div></div>
+            <button id="confirmWager">
+                Confirm Wager
+            </button>
+        </div>
+    </div>
     </main>
+
     <div id="Jukebox">Jukebox!
         <input id="jukeboxEntry" placeholder="Enter a song to play in the jukebox!"></input>
         <button id="jukeboxButton">✔️</button>
     </div>
-
     <!--popper.js  (bootstraps 3rd party js MUST BE BEFORE BOOTSTRAP)-->
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <!-- jquery -->

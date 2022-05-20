@@ -272,7 +272,6 @@ function doubleDown() {
 
 };
 
-
 buttonHit.on("click", function () {
     console.log("Hit");
 });
@@ -338,4 +337,27 @@ deck_6.on('click', function (event) {
 })
 
 
-// Jukebox AKA spotify api
+
+// Invalid play modal popup
+
+var invalidConfirm = $('#invalidConfirm')
+var invalidAction = $('#invalidAction')
+
+invalidConfirm.on('click', function () {
+    invalidAction.attr("style", "display: none")
+})
+
+// Function to call invalid play modal
+
+function invalidActionDisplay() {
+    invalidAction.attr("style", "display: flex")
+}
+
+
+// Buttons for chips and chip count.
+
+// var chipCount = $("#counter"); - current stack of chips
+// var increaseButton = $("#add"); - increasing your bet
+// var decreaseButton = $("#subtract"); - decreasing bet
+// var currentWagerAmount = $("#bet"); - current bet
+// var getNewChips = $("#newChips"); - only should be needed at beginning game and then when the stack hits zero

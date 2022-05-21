@@ -3,46 +3,19 @@ var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
 var splitCount = -1;
 var playerOtherHands = [
-  [
-    { cardValue: 0, img: "" },
-    { cardValue: 0, img: "" },
-  ], //0 -- other hand for players first split
-  [
-    { cardValue: 0, img: "" },
-    { cardValue: 0, img: "" },
-  ], //1 -- other hand for players second split
-  [
-    { cardValue: 0, img: "" },
-    { cardValue: 0, img: "" },
-  ], //2 -- other hand for playes third split
+    [{ value: 0, img: "" }, { value: 0, img: "" }], //0 -- other hand for players first split
+    [{ value: 0, img: "" }, { value: 0, img: "" }], //1 -- other hand for players second split
+    [{ value: 0, img: "" }, { value: 0, img: "" }] //2 -- other hand for playes third split
 ];
 
 // images and values are filled for testing purposes
 // we will need to populate them from the draw card function
-var faceDownCard = {
-  cardValue: 0,
-  img: "http://clipart-library.com/images/8cEbeEMLi.png",
-};
-var dealerDrawCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
-};
-var dealerShowCard = {
-  cardValue: 5,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
-};
-var dealerHoleCard = {
-  cardValue: 10,
-  img: "https://deckofcardsapi.com/static/img/KH.png",
-};
-var PlayerFirstCard = {
-  cardValue: 8,
-  img: "https://deckofcardsapi.com/static/img/8H.png",
-};
-var PlayerSecondCard = {
-  cardValue: 8,
-  img: "https://deckofcardsapi.com/static/img/8C.png",
-};
+var faceDownCard = {value: 0, img: "http://clipart-library.com/images/8cEbeEMLi.png"};
+var dealerDrawCard = {value: 10, img: "https://deckofcardsapi.com/static/img/KH.png"};
+var dealerShowCard = {value: 5, img: "https://deckofcardsapi.com/static/img/KH.png"};
+var dealerHoleCard = {value: 10, img: "https://deckofcardsapi.com/static/img/KH.png"};
+var PlayerFirstCard = {value: 8, img: "https://deckofcardsapi.com/static/img/8H.png"};
+var PlayerSecondCard = {value: 8, img: "https://deckofcardsapi.com/static/img/8C.png"};
 
 // declare elements for splitting hands
 var otherHandsRowEl;
@@ -120,8 +93,8 @@ decreaseButton.on("click", function () {
 });
 
 function startDeal() {
-  displayDealerCards();
-  // playerPlay();
+    displayDealerCards();
+    // playerPlay();
 }
 
 confirmButton.on("click", function () {
@@ -133,7 +106,7 @@ var shuffleBtn = document.getElementById("buttonShuffle");
 
 var drawBtn = document.getElementById("buttonHit");
 
-var cardValue;
+var cardValue; //@Ryan: i changed every "cardValue" to "value" except this one so that we could match up properl;y with our api
 var deck_id;
 var numOfDecks = 1;
 var drawCardObj = {};
@@ -158,61 +131,71 @@ function shuffleDeck() {
 
 // parameters explanation for drawCard function: (where to display the image,  what object to store the image in,  what object to use the img value ie. playerCount (no .val),  object to store the card value in)
 function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
-  deck_id = localStorage.getItem("deckId");
-  var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
-  fetch(requestUrl)
+    deck_id = localStorage.getItem("deckId");
+    var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
+    fetch(requestUrl)
     .then(function (response) {
-      return response.json();
+        return response.json();
     })
     .then(function (data) {
-      drawCardObj = data;
-      //call function to display the card image in whereImg
-      displayCard(drawCardObj.cards[0].image, whereImgShow);
-      //store img address string to whereImgStore
-      whereImgStore.img = drawCardObj.cards[0].image;
+        drawCardObj = data;
+        //   console.log(data);
+        //call function to display the card image in whereImg
+        displayCard(drawCardObj.cards[0].image, whereImgShow);
+        //store img address string to whereImgStore
+        whereImgStore.img = drawCardObj.cards[0].image;
 
-      //use the value of the card in whereValuse
-      useValue(whereValUse, whereValStore, drawCardObj.cards[0].value);
-      // store the value of the drawn card to whereValStore
-      if (whereValStore == "nada" || typeof(whereValStore) == "undefined") {
-    } else {
-        whereValStore.cardValue = drawCardObj.cards[0].value;
-    };
-      // return;
+        //use the value of the card in whereValuse
+        useValue(whereValUse, whereValStore, drawCardObj.cards[0]);
+        // store the value of the drawn card to whereValStore
+        if (whereValStore == "nada" || typeof(whereValStore) == "undefined") {
+        } else {
+        whereValStore.value = drawCardObj.cards[0];
+        };
+        // return;
     });
 };
 
 //function to manipulate the card value taken from drawCard
 //pass an array index or the dealerCount or playerCount variable to where
+var thisVal = 0;
+            //dealerCount,dealerHoleCard,drawCardObj.cards[0]
 function useValue(whereUse, whereStore, what) {
-  var thisVal = 0;
-  //convert face cards to 10 and ace to 11
-  if (what == "KING" || what == "QUEEN" || what == "JACK") {
-    thisVal = 10;
-  } else if (what == "ACE") {
-    thisVal = 11;
-  } else {
-    thisVal = parseInt(what, 10);
-  }
-// check if whereStore is not defined
-  if (whereStore == "nada" || typeof(whereStore) == "undefined") {
+    // console.log(what.value);
+    thisVal = 0;
+    //convert face cards to 10 and ace to 11
+    if (what.value == "KING" || what.value == "QUEEN" || what.value == "JACK") {
+        thisVal = 10;
+        // console.log('face card');
+    } else if (what.value == "ACE") {
+        // console.log('ace');
+        thisVal = 11;
+    } else {
+        // console.log('sumthin');
+        thisVal = parseInt(what.value, 10);
+    };
+    console.log(thisVal);
+    console.log(whereUse);
+
+    // check if whereStore is not defined
+    if (whereStore == "nada" || typeof(whereStore) == "undefined") {
     } else {
         //store thisVal to whereStore
-        whereStore.cardValue = thisVal;
+        whereStore.value = thisVal;
     };
-//check if whereUse is not defined
-  if (whereUse == "nada" || typeof(whereUse) == "undefined") {
+    //check if whereUse is not defined
+    if (whereUse == "nada" || typeof(whereUse) == "undefined") {
     } else {
         //use thisVal in whereUse
         whereUse.val += thisVal;
     };
 
-      //check if an ace put player over 21 and if so makes the ace value=1
-  if (thisVal === 11 && whereUse.val > 21) {
-    whereUse.val -= 10;
-  }
-  return whereUse;
-}
+    //check if an ace put player over 21 and if so makes the ace value=1
+    if (thisVal === 11 && whereUse.val > 21) {
+        whereUse.val -= 10;
+    }
+    return whereUse.val;
+};
 
 // function to display a card and append it to the HTML in whereCard location
 function displayCard(whatCard, whereCard) {
@@ -227,6 +210,27 @@ function displayCard(whatCard, whereCard) {
   cardDiv.append(showThisCard);
 };
 
+
+
+
+// trial sleep function
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+async function Tutor() {
+    document.write('Hello Toturix');
+    for (let i = 1; i <20 ; i++) {        
+        await sleep(3000);
+        document.write( i +" "+"Welcome to tutorix" + " " + "</br>");
+    }
+}
+// Tutor() //commented out so code doesnt break
+// end trial sleep function
+
+
+
+
+
 //function to show dealer cards
 function displayDealerCards () {
     // empty dealer conatianer
@@ -235,86 +239,44 @@ function displayDealerCards () {
     displayCard(faceDownCard.img, dealerCardsEl);
     //draw dealers hole card and save img and val to object and update dealerCount
     drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
-    //draw dealer show card and display and save img and val to object and update dealerCount
+    //draw dealer show card and display and save img and val to object and update dealerCount after 500ms
     drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
+    console.log(dealerCount);
 
-    console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
+    // console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
 };
 
 
-//function for dealer to play their hand
+
+//function for dealer to play their hand -- not working right
 function dealerPlay () {
     var dealerStand = false;
-    var holeCard = dealerCardsEl.children([0]).children([0]);
+    // show dealer hole card
+    var holeCard = dealerCardsEl.children().children().first();
     holeCard.attr('src', dealerHoleCard.img);
-    // dealers starting count
-    // dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
-    function countDealer() {
-        useValue(dealerCount, nada, dealerHoleCard)
-        .then (
-            useValue(dealerCount, nada, dealerShowCard)
-        ).then (
-            console.log(dealerCount)
-        ).then (
-            function delayDraw() { 
-                setTimeout(function() {   
-                    console.log(dealerCount.val);
-                    if (dealerCount.val < 17) {
-                        drawCard(dealerCardsEl, nada, dealerCount);       
-                        console.log(dealerCount.val);
-                        delayDraw();
-                    };
-                }, 1500);
-                return dealerCount;
-            }
-        ).then (
-            function dealerOutcome() {
-                console.log('dealerOutcome');
-                // dealer busts or stands
-                if (dealerCount > 21) {
-                    console.log("dealer BUSTS");
-                    //call player win function
-                } else {
-                    console.log("dealer stands on " + dealerCount.val);
-                    dealerStand = true;
-                    //call function to compare dealer hand to players
-                };
-                return dealerCount;
-            }
-        ).then (
-            function () {
-                console.log(dealerCount)
-                return dealerCount;
-            }
-        )
-    };
-    countDealer();
-            // display dealer hole card
-    // displayCard(dealerHoleCard, dealerCardsEl); 
-    // console.log(dealerHoleCard.img);
+
+    console.log(dealerCount);
     
+    //currently does nothing but display the hole card properly and make dealer stand/bust on what they are dealt
 
-    // delayDraw();
+    //dealer does not yet draw till >= 17
 
 
+
+
+
+        if (dealerCount > 21) {
+            console.log("dealer BUSTS");
+            //call player win function
+        } else {
+            console.log("dealer stands on " + dealerCount.val);
+            dealerStand = true;
+            //call function to compare dealer hand to players
+        };
 
 };
 
-var i = 1;                  //  set your counter to 1
 
-function myLoop() {         //  create a loop function
-  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-    console.log('hello');   //  your code here
-    i++;                    //  increment the counter
-    if (i < 10) { 
-        console.log(i);          //  if the counter < 10, call the loop function
-      myLoop();             //  ..  again which will trigger another 
-    }                       //  ..  setTimeout()
-  }, 3000)
-}
-
-//comment in next line to test dealer play
-// dealerPlay();
 
 // function for user to play their hand
 // function playerPlay() {
@@ -326,13 +288,13 @@ function myLoop() {         //  create a loop function
 //   console.log(firstCard);
 //   drawCard(playerCardsEl, "secondCard");
 //   console.log(secondCard);
-//   playerCount = PlayerFirstCard.cardValue + PlayerSecondCard.cardValue;
+//   playerCount = PlayerFirstCard.value + PlayerSecondCard.value;
 
 //   if (playerCount === 21) {
 //     console.log(
 //       "Player wins with Blackjack and is paid out 3/2 on their wager"
 //     ); // run player wins function?
-//   } else if (PlayerFirstCard.cardValue === PlayerSecondCard.cardValue) {
+//   } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
 //     console.log("Would you like to split your hand?"); // run playerSplit()?
 //   } else if (currentHandTotal < 21) {
 //     // this function needs to be created
@@ -407,9 +369,9 @@ function playerSplit() {
   displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
   //store values of split card to other cards array
-  playerOtherHands[splitCount][0].cardValue = PlayerSecondCard.cardValue;
+  playerOtherHands[splitCount][0].value = PlayerSecondCard.value;
   playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
-  playerCount = PlayerFirstCard.cardValue;
+  playerCount = PlayerFirstCard.value;
 
   //draw new cards and append images to correct columns
   //adds card values to their respective places and calculates playerCount for current hand
@@ -442,7 +404,7 @@ buttonHit.on("click", function () {
 
 buttonStand.on("click", function () {
     console.log("Stand");
-    // dealerPlay();  //this is here for testing only
+    dealerPlay();  //this is here for testing only
     // myLoop();
 });
 

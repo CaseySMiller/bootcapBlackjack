@@ -224,9 +224,14 @@ function displayDealerCards () {
     setTimeout(() => {
       if (dealerCount.val == 21) {
         console.log('Dealer has Blackjack, stupid dealer');
-        playerCount.val = 0;
-        dealerPlay();
-      }
+        // check if player has blackjack
+        if (playerCount.val == 21) {
+          console.log('Push: nobody wins');
+        } else {
+          playerCount.val = 0;
+          dealerPlay();
+        };
+      };
       console.log(dealerCount.val);
     }, 1500);
 };

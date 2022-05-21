@@ -2,6 +2,7 @@ var nada = "nada"; // throwaway parameter for drawCard function
 var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
 var splitCount = -1;
+var hasAce = 0;
 var playerOtherHands = [
     [{ value: 0, img: "" }, { value: 0, img: "" }], //0 -- other hand for players first split
     [{ value: 0, img: "" }, { value: 0, img: "" }], //1 -- other hand for players second split
@@ -139,7 +140,6 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
     })
     .then(function (data) {
         drawCardObj = data;
-        //   console.log(data);
         //call function to display the card image in whereImg
         displayCard(drawCardObj.cards[0].image, whereImgShow);
         //store img address string to whereImgStore
@@ -161,21 +161,17 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
 var thisVal = 0;
             //dealerCount,dealerHoleCard,drawCardObj.cards[0]
 function useValue(whereUse, whereStore, what) {
-    // console.log(what.value);
     thisVal = 0;
     //convert face cards to 10 and ace to 11
     if (what.value == "KING" || what.value == "QUEEN" || what.value == "JACK") {
         thisVal = 10;
-        // console.log('face card');
     } else if (what.value == "ACE") {
-        // console.log('ace');
         thisVal = 11;
+        hasAce++; //adds the fact hat this hand drew an ace
     } else {
-        // console.log('sumthin');
         thisVal = parseInt(what.value, 10);
     };
     console.log(thisVal);
-    console.log(whereUse);
 
     // check if whereStore is not defined
     if (whereStore == "nada" || typeof(whereStore) == "undefined") {
@@ -190,9 +186,11 @@ function useValue(whereUse, whereStore, what) {
         whereUse.val += thisVal;
     };
 
+
     //check if an ace put player over 21 and if so makes the ace value=1
-    if (thisVal === 11 && whereUse.val > 21) {
+    if (hasAce > 0 && whereUse.val > 21) {
         whereUse.val -= 10;
+        hasAce--; //show that we used one ace as a 1
     }
     return whereUse.val;
 };
@@ -211,26 +209,6 @@ function displayCard(whatCard, whereCard) {
 };
 
 
-
-
-// trial sleep function
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
-async function Tutor() {
-    document.write('Hello Toturix');
-    for (let i = 1; i <20 ; i++) {        
-        await sleep(3000);
-        document.write( i +" "+"Welcome to tutorix" + " " + "</br>");
-    }
-}
-// Tutor() //commented out so code doesnt break
-// end trial sleep function
-
-
-
-
-
 //function to show dealer cards
 function displayDealerCards () {
     // empty dealer conatianer
@@ -241,9 +219,21 @@ function displayDealerCards () {
     drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
     //draw dealer show card and display and save img and val to object and update dealerCount after 500ms
     drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-    console.log(dealerCount);
 
-    // console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
+    // check for blackjack after 1800ms
+    setTimeout(() => {
+      if (dealerCount.val == 21) {
+        console.log('Dealer has Blackjack, stupid dealer');
+        // check if player has blackjack
+        if (playerCount.val == 21) {
+          console.log('Push: nobody wins');
+        } else {
+          playerCount.val = 0;
+          dealerPlay();
+        };
+      };
+      console.log(dealerCount.val);
+    }, 1500);
 };
 
 
@@ -252,28 +242,24 @@ function displayDealerCards () {
 function dealerPlay () {
     var dealerStand = false;
     // show dealer hole card
-    var holeCard = dealerCardsEl.children().children().first();
-    holeCard.attr('src', dealerHoleCard.img);
+    var holeCardEl = dealerCardsEl.children().children().first();
+    holeCardEl.attr('src', dealerHoleCard.img);
 
-    console.log(dealerCount);
-    
-    //currently does nothing but display the hole card properly and make dealer stand/bust on what they are dealt
-
-    //dealer does not yet draw till >= 17
-
-
-
-
-
-        if (dealerCount > 21) {
-            console.log("dealer BUSTS");
-            //call player win function
-        } else {
-            console.log("dealer stands on " + dealerCount.val);
-            dealerStand = true;
-            //call function to compare dealer hand to players
-        };
-
+    // check dealerCount after 2 seconds
+    dealerCheck();
+    // function to execute proper dealer action
+    function dealerCheck () {
+      if (dealerCount.val < 17){
+        drawCard(dealerCardsEl, nada, dealerCount, nada);
+        setTimeout(dealerCheck, 1500);
+      } else if (dealerCount.val > 21) {
+        console.log(dealerCount.val + ' dealer BUSTS!');
+        // call win function
+      } else {
+        console.log('dealer stands on ' + dealerCount.val);
+        // call win/loss check
+      }
+    };
 };
 
 

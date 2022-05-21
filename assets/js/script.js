@@ -124,10 +124,6 @@ function startDeal() {
   // playerPlay();
 }
 
-confirmButton.on("click", function () {
-  startDeal();
-});
-
 // Ryan's addition:
 var shuffleBtn = document.getElementById("buttonShuffle");
 
@@ -174,13 +170,13 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
       //use the value of the card in whereValuse
       useValue(whereValUse, whereValStore, drawCardObj.cards[0].value);
       // store the value of the drawn card to whereValStore
-      if (whereValStore == "nada" || typeof(whereValStore) == "undefined") {
-    } else {
+      if (whereValStore == "nada" || typeof whereValStore == "undefined") {
+      } else {
         whereValStore.cardValue = drawCardObj.cards[0].value;
-    };
+      }
       // return;
     });
-};
+}
 
 //function to manipulate the card value taken from drawCard
 //pass an array index or the dealerCount or playerCount variable to where
@@ -194,20 +190,20 @@ function useValue(whereUse, whereStore, what) {
   } else {
     thisVal = parseInt(what, 10);
   }
-// check if whereStore is not defined
-  if (whereStore == "nada" || typeof(whereStore) == "undefined") {
-    } else {
-        //store thisVal to whereStore
-        whereStore.cardValue = thisVal;
-    };
-//check if whereUse is not defined
-  if (whereUse == "nada" || typeof(whereUse) == "undefined") {
-    } else {
-        //use thisVal in whereUse
-        whereUse.val += thisVal;
-    };
+  // check if whereStore is not defined
+  if (whereStore == "nada" || typeof whereStore == "undefined") {
+  } else {
+    //store thisVal to whereStore
+    whereStore.cardValue = thisVal;
+  }
+  //check if whereUse is not defined
+  if (whereUse == "nada" || typeof whereUse == "undefined") {
+  } else {
+    //use thisVal in whereUse
+    whereUse.val += thisVal;
+  }
 
-      //check if an ace put player over 21 and if so makes the ace value=1
+  //check if an ace put player over 21 and if so makes the ace value=1
   if (thisVal === 11 && whereUse.val > 21) {
     whereUse.val -= 10;
   }
@@ -225,182 +221,182 @@ function displayCard(whatCard, whereCard) {
   showThisCard.attr("src", whatCard);
   whereCard.append(cardDiv);
   cardDiv.append(showThisCard);
-};
+}
 
 //function to show dealer cards
-function displayDealerCards () {
-    // empty dealer conatianer
-    dealerCardsEl.empty();
-    // display dealer hole card
-    displayCard(faceDownCard.img, dealerCardsEl);
-    //draw dealers hole card and save img and val to object and update dealerCount
-    drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
-    //draw dealer show card and display and save img and val to object and update dealerCount
-    drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
+function displayDealerCards() {
+  // empty dealer conatianer
+  dealerCardsEl.empty();
+  // display dealer hole card
+  displayCard(faceDownCard.img, dealerCardsEl);
+  //draw dealers hole card and save img and val to object and update dealerCount
+  drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
+  //draw dealer show card and display and save img and val to object and update dealerCount
+  drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
 
-    console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
-};
-
+  console.log(dealerCardsEl.children([0]).children([0]).attr("src"));
+}
 
 //function for dealer to play their hand
-function dealerPlay () {
-    var dealerStand = false;
-    var holeCard = dealerCardsEl.children([0]).children([0]);
-    holeCard.attr('src', dealerHoleCard.img);
-    // dealers starting count
-    // dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
-    function countDealer() {
-        useValue(dealerCount, nada, dealerHoleCard)
-        .then (
-            useValue(dealerCount, nada, dealerShowCard)
-        ).then (
-            console.log(dealerCount)
-        ).then (
-            function delayDraw() { 
-                setTimeout(function() {   
-                    console.log(dealerCount.val);
-                    if (dealerCount.val < 17) {
-                        drawCard(dealerCardsEl, nada, dealerCount);       
-                        console.log(dealerCount.val);
-                        delayDraw();
-                    };
-                }, 1500);
-                return dealerCount;
-            }
-        ).then (
-            function dealerOutcome() {
-                console.log('dealerOutcome');
-                // dealer busts or stands
-                if (dealerCount > 21) {
-                    console.log("dealer BUSTS");
-                    //call player win function
-                } else {
-                    console.log("dealer stands on " + dealerCount.val);
-                    dealerStand = true;
-                    //call function to compare dealer hand to players
-                };
-                return dealerCount;
-            }
-        ).then (
-            function () {
-                console.log(dealerCount)
-                return dealerCount;
-            }
-        )
-    };
-    countDealer();
-            // display dealer hole card
-    // displayCard(dealerHoleCard, dealerCardsEl); 
-    // console.log(dealerHoleCard.img);
-    
+function dealerPlay() {
+  var dealerStand = false;
+  var holeCard = dealerCardsEl.children([0]).children([0]);
+  holeCard.attr("src", dealerHoleCard.img);
+  // dealers starting count
+  // dealerCount.val = dealerShowCard.cardValue + dealerHoleCard.cardValue;
+  // function countDealer() {
+  //   useValue(dealerCount, nada, dealerHoleCard)
+  //     .then(useValue(dealerCount, nada, dealerShowCard))
+  //     .then(console.log(dealerCount))
+  //     .then(function delayDraw() {
+  //       setTimeout(function () {
+  //         console.log(dealerCount.val);
+  //         if (dealerCount.val < 17) {
+  //           drawCard(dealerCardsEl, nada, dealerCount);
+  //           console.log(dealerCount.val);
+  //           delayDraw();
+  //         }
+  //       }, 1500);
+  //       return dealerCount;
+  //     })
+  //     .then(function dealerOutcome() {
+  //       console.log("dealerOutcome");
+  //       // dealer busts or stands
+  //       if (dealerCount > 21) {
+  //         console.log("dealer BUSTS");
+  //         //call player win function
+  //       } else {
+  //         console.log("dealer stands on " + dealerCount.val);
+  //         dealerStand = true;
+  //         //call function to compare dealer hand to players
+  //       }
+  //       return dealerCount;
+  //     })
+  //     .then(function () {
+  //       console.log(dealerCount);
+  //       return dealerCount;
+  //     });
+  // }
+  // countDealer();
+  // display dealer hole card
+  // displayCard(dealerHoleCard, dealerCardsEl);
+  // console.log(dealerHoleCard.img);
 
-    // delayDraw();
+  // delayDraw();
+}
 
+var i = 1; //  set your counter to 1
 
-
-};
-
-var i = 1;                  //  set your counter to 1
-
-function myLoop() {         //  create a loop function
-  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-    console.log('hello');   //  your code here
-    i++;                    //  increment the counter
-    if (i < 10) { 
-        console.log(i);          //  if the counter < 10, call the loop function
-      myLoop();             //  ..  again which will trigger another 
-    }                       //  ..  setTimeout()
-  }, 3000)
+function myLoop() {
+  //  create a loop function
+  setTimeout(function () {
+    //  call a 3s setTimeout when the loop is called
+    console.log("hello"); //  your code here
+    i++; //  increment the counter
+    if (i < 10) {
+      console.log(i); //  if the counter < 10, call the loop function
+      myLoop(); //  ..  again which will trigger another
+    } //  ..  setTimeout()
+  }, 3000);
 }
 
 //comment in next line to test dealer play
-// dealerPlay();
+dealerPlay();
 
 // function for user to play their hand
-// function playerPlay() {
-//   var firstCard = $("#firstDealt");
-//   var secondCard = $("#secondDealt");
-//   playerCardsEl.empty();
+function playerPlay() {
+  var firstCard = $("#firstDealt");
+  var secondCard = $("#secondDealt");
+  playerCardsEl.empty();
 
-//   drawCard(playerCardsEl, "firstCard");
-//   console.log(firstCard);
-//   drawCard(playerCardsEl, "secondCard");
-//   console.log(secondCard);
-//   playerCount = PlayerFirstCard.cardValue + PlayerSecondCard.cardValue;
+  $(document).ready(function () {
+    buttonHit.click(function () {
+      drawCard(
+        playerCardsEl,
+        PlayerFirstCard.img,
+        playerCount,
+        PlayerFirstCard.cardValue
+      );
+      console.log(PlayerFirstCard);
+    });
+  });
 
-//   if (playerCount === 21) {
-//     console.log(
-//       "Player wins with Blackjack and is paid out 3/2 on their wager"
-//     ); // run player wins function?
-//   } else if (PlayerFirstCard.cardValue === PlayerSecondCard.cardValue) {
-//     console.log("Would you like to split your hand?"); // run playerSplit()?
-//   } else if (currentHandTotal < 21) {
-//     // this function needs to be created
-//     console.log("Would you like to hit or stand?"); // should this be an alert or modal?
-//   } else {
-//     console.log("Player stands on " + dealerCount);
-//     //call function to compare dealer hand to players
-//   }
+  // buttonHit.on('click', function drawCard (playerCardsEl, "firstCard");
+  // console.log(firstCard);
+  drawCard(playerCardsEl, "secondCard");
 
-//   // displayCard(PlayerFirstCard, playerCardsEl, cardID);
-// }
-// playerPlay();
+  playerCount = PlayerFirstCard.cardValue + PlayerSecondCard.cardValue;
+
+  if (playerCount === 21) {
+    console.log(
+      "Player wins with Blackjack and is paid out 3/2 on their wager"
+    ); // run player wins function?
+  } else if (PlayerFirstCard.cardValue === PlayerSecondCard.cardValue) {
+    console.log("Would you like to split your hand?"); // run playerSplit()?
+  } else if (currentHandTotal < 21) {
+    // this function needs to be created
+    console.log("Would you like to hit or stand?"); // should this be an alert or modal?
+  } else {
+    console.log("Player stands on " + dealerCount);
+    //call function to compare dealer hand to players
+  }
+
+  // displayCard(PlayerFirstCard, playerCardsEl, cardID);
+}
+playerPlay();
 //comment in next line to test dealer play
 // dealerPlay();
 
-
 //this is a testing function only and is not used anywhere in the aplication
-
-
-
 
 //function to handle player splitting cards
 function playerSplit() {
-    splitCount ++;
-    // check if player has already split 3 times this hand and return out of function if so
-    if (splitCount > 2) {
-        alert ('too many splitty for you'); //change this to warning modal
-        return;
-    } else if (splitCount === 0) { // set up columns if this is the first split
-        //clear player cards row
-        playerCardsEl.empty();
-        // split player row into current playing column on left and split hand in small col on right.
-        playingColElLeft = $('<div>');
-        playingColElRight = $('<div>');
-        playingColElLeft.addClass('col-8');
-        playingColElLeft.attr('id', 'current-hand-col');
-        playerCardsEl.append(playingColElLeft);
-        playingColElRight.addClass('col-4');
-        playingColElRight.attr('id', 'other-hands-col');
-        playerCardsEl.append(playingColElRight);
-        // append row for current hand title to left playing area column
-        var currentHandTitleRowEl = $('<div>');
-        currentHandTitleRowEl.addClass('d-flex flex-row name-plate fs-2 fw-b m-2');
-        currentHandTitleRowEl.text('Current Hand');
-        playingColElLeft.append(currentHandTitleRowEl);
-        // append row for current hand to left playing area column
-        currentHandRowEl = $('<div>');
-        currentHandRowEl.addClass('d-flex flex-row');
-        playingColElLeft.append(currentHandRowEl);
-        // update wherePlay variable to play in this new row
-        wherePlay = currentHandRowEl;
-        // append row for current hand title to left playing area column
-        var otherHandTitleRowEl = $('<div>');
-        otherHandTitleRowEl.addClass('d-flex flex-row name-plate fs-2 fw-b m-2');
-        otherHandTitleRowEl.text('Next Hands');
-        playingColElRight.append(otherHandTitleRowEl);
-    } else {
-        currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
-    };
-    //append row for other hands
-    otherHandsRowEl = $('<div>');
-    otherHandsRowEl.addClass('d-flex flex-row');
-    otherHandsRowEl.attr('id', 'splitHand' + splitCount);
-    playingColElRight.append(otherHandsRowEl);
-    
-    //display cards in their respective columns
-    displayCard(PlayerFirstCard.img, currentHandRowEl);
-    displayCard(PlayerSecondCard.img, otherHandsRowEl);
+  splitCount++;
+  // check if player has already split 3 times this hand and return out of function if so
+  if (splitCount > 2) {
+    alert("too many splitty for you"); //change this to warning modal
+    return;
+  } else if (splitCount === 0) {
+    // set up columns if this is the first split
+    //clear player cards row
+    playerCardsEl.empty();
+    // split player row into current playing column on left and split hand in small col on right.
+    playingColElLeft = $("<div>");
+    playingColElRight = $("<div>");
+    playingColElLeft.addClass("col-8");
+    playingColElLeft.attr("id", "current-hand-col");
+    playerCardsEl.append(playingColElLeft);
+    playingColElRight.addClass("col-4");
+    playingColElRight.attr("id", "other-hands-col");
+    playerCardsEl.append(playingColElRight);
+    // append row for current hand title to left playing area column
+    var currentHandTitleRowEl = $("<div>");
+    currentHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
+    currentHandTitleRowEl.text("Current Hand");
+    playingColElLeft.append(currentHandTitleRowEl);
+    // append row for current hand to left playing area column
+    currentHandRowEl = $("<div>");
+    currentHandRowEl.addClass("d-flex flex-row");
+    playingColElLeft.append(currentHandRowEl);
+    // update wherePlay variable to play in this new row
+    wherePlay = currentHandRowEl;
+    // append row for current hand title to left playing area column
+    var otherHandTitleRowEl = $("<div>");
+    otherHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
+    otherHandTitleRowEl.text("Next Hands");
+    playingColElRight.append(otherHandTitleRowEl);
+  } else {
+    currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
+  }
+  //append row for other hands
+  otherHandsRowEl = $("<div>");
+  otherHandsRowEl.addClass("d-flex flex-row");
+  otherHandsRowEl.attr("id", "splitHand" + splitCount);
+  playingColElRight.append(otherHandsRowEl);
+
+  //display cards in their respective columns
+  displayCard(PlayerFirstCard.img, currentHandRowEl);
+  displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
   //display cards in their respective columns
   displayCard(PlayerFirstCard.img, currentHandRowEl);
@@ -441,13 +437,13 @@ buttonHit.on("click", function () {
 });
 
 buttonStand.on("click", function () {
-    console.log("Stand");
-    // dealerPlay();  //this is here for testing only
-    // myLoop();
+  console.log("Stand");
+  // dealerPlay();  //this is here for testing only
+  // myLoop();
 });
 
 buttonSplit.on("click", function () {
-    playerSplit();
+  playerSplit();
 });
 
 buttonDD.on("click", function () {

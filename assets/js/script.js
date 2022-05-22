@@ -2,6 +2,8 @@ var nada = "nada"; // throwaway parameter for drawCard function
 var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
 var splitCount = -1;
+var unplayedHands = -1;
+var allPlayerCounts = [];
 var hasAce = 0;
 var playerOtherHands = [
     [{ value: 0, img: "" }, { value: 0, img: "" }], //0 -- other hand for players first split
@@ -225,7 +227,11 @@ function displayDealerCards () {
         console.log('Dealer has Blackjack, stupid dealer');
         // check if player has blackjack
         if (playerCount.val == 21) {
+          // Push: return palyer wager
+          console.log('push');
         } else {
+          // dealer wins with Blackjack before player can play
+          // set player count to 0 and run dealerPlay to show this
           playerCount.val = 0;
           dealerPlay();
         };
@@ -247,14 +253,18 @@ function dealerPlay () {
     // function to execute proper dealer action
     function dealerCheck () {
       if (dealerCount.val < 17){
+        //dealer draws if under 17
         drawCard(dealerCardsEl, nada, dealerCount, nada);
         setTimeout(dealerCheck, 1500);
       } else if (dealerCount.val > 21) {
         console.log(dealerCount.val + ' dealer BUSTS!');
-        // call win function
+        // Dealer Busts: set dealerCount to 0 and run win/loss on all hands
+        dealerCount.val = 0;
+        winLossCheck();
       } else {
         console.log('dealer stands on ' + dealerCount.val);
-        // call win/loss check
+        // Dealer stands on >= 17 call win/loss check
+        winLossCheck();
       }
     };
 };
@@ -302,6 +312,7 @@ function dealerPlay () {
 //function to handle player splitting cards
 function playerSplit() {
     splitCount ++;
+    unplayedHands++;
     // check if player has already split 3 times this hand and return out of function if so
     if (splitCount > 2) {
         alert ('too many splitty for you'); //change this to warning modal
@@ -347,39 +358,93 @@ function playerSplit() {
     displayCard(PlayerFirstCard.img, currentHandRowEl);
     displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
-  //display cards in their respective columns
-  // displayCard(PlayerFirstCard.img, currentHandRowEl);
-  // displayCard(PlayerSecondCard.img, otherHandsRowEl);
+    //store values of split card to other cards array
+    playerOtherHands[splitCount][0].value = PlayerSecondCard.value;
+    playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
+    playerCount.val = PlayerFirstCard.value;
 
-  //store values of split card to other cards array
-  playerOtherHands[splitCount][0].value = PlayerSecondCard.value;
-  playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
-  playerCount.val = PlayerFirstCard.value;
-
-  //draw new cards and append images to correct columns
-  //adds card values to their respective places and calculates playerCount for current hand
-  drawCard(currentHandRowEl, PlayerSecondCard, playerCount, PlayerSecondCard);
-  drawCard(
-    otherHandsRowEl,
-    playerOtherHands[splitCount][1],
-    nada,
-    playerOtherHands[splitCount][1]
-  );
-
+    //draw new cards and append images to correct columns
+    //adds card values to their respective places and calculates playerCount for current hand
+    drawCard(currentHandRowEl, PlayerSecondCard, playerCount, PlayerSecondCard);
+    drawCard(
+      otherHandsRowEl,
+      playerOtherHands[splitCount][1],
+      nada,
+      playerOtherHands[splitCount][1]
+    );
 
   // TODO:
   // call play function
   // call function to pull more player chips (maybe in player play function)
 };
 
+//function to chack more hands and move to next hand while storing current hand
+function checkMoreHands () {
+  // append current playerCount to allPlayerCounts array
+  allPlayerCounts.push(playerCount.val);
+  console.log('checking for other hands');
+  console.log(allPlayerCounts);
+  // check if there is an unplayed split hand
+  if (unplayedHands > -1) {
+    console.log('there is an unplayed hand');
+    // subtract this hand from unplayedHands
+    unplayedHands --;
+    // copy current hand to local object array
+    
+    // copy [0] index from playerOtherHands to local object array
+    
+    // delete [0] index from playerOtherHands and append empty object array to end
+
+    // append html(card images) from current hand to bottom of other hands column
+      // maybe try to shrink it by 50%
+
+    // append split hand from local array to currentPlayer hand
+
+    // call player play function
+  } else {
+    // dealerPlay(); // comment this back in once function works
+  };
+  dealerPlay(); //this is here for testing only
+
+    
+};
+
+// function to check who wins
+function winLossCheck() {
+  //itterate through array of allPlayerCounts
+  for (i = 0; i < allPlayerCounts.length; i++) {
+    let x = i + 1;
+    if (allPlayerCounts[i] === dealerCount.val) {
+      console.log('Hand ' + x + ': Push');
+      // return players wager
+    } else if (allPlayerCounts[i] > dealerCount.val) {
+      console.log('Hand ' + x + ': Player wins');
+      // add player wager * 2 back to chips
+    } else {
+      console.log('Hand ' + x + ': dealer wins');
+      // player doesnt get chips back -- start new hand
+    };
+  };
+};
+
 // function for doubling down
 function doubleDown() {
   console.log("Double down dummy!");
   // double bet
-  // draw only
-  drawCard(wherePlay, nada, playerCount, nada);
 
-  // dealer play and check win/loss
+  // draw only one card
+  drawCard(wherePlay, nada, playerCount, nada);
+  // check for bust after 1500ms
+  setTimeout(() => {
+    console.log('this count' + playerCount.val)
+    if (playerCount.val > 21) {
+      console.log('Player busts');
+      playerCount.val = 0;
+      checkMoreHands();
+    } else {
+      checkMoreHands();
+    }
+  }, 1500);
 };
 
 buttonHit.on("click", function () {
@@ -388,8 +453,8 @@ buttonHit.on("click", function () {
 
 buttonStand.on("click", function () {
     console.log("Stand");
-    dealerPlay();  //this is here for testing only
-    // myLoop();
+    //check for more hands and lets dealer play when they have all been played
+    checkMoreHands(); 
 });
 
 buttonSplit.on("click", function () {
@@ -409,8 +474,6 @@ buttonModalSubmit.on("click", function () {
   numOfDecks = selectedDeck;
   // shuffleDeck()
   displayDealerCards();
-  //comment in next line to test dealer play
-  // dealerPlay();
 });
 
 // Dropdown Menu for decks logic

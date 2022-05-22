@@ -209,7 +209,6 @@ function displayCard(whatCard, whereCard) {
   cardDiv.append(showThisCard);
 };
 
-
 //function to show dealer cards
 function displayDealerCards () {
     // empty dealer conatianer
@@ -580,6 +579,8 @@ DDmenu2.on('click', function (event) {
     $('#jukeboxSrc').remove()
 })
 
+
+// Daily Motion Api url endings. directs the script into the proper page.
 
 // xuvoto
 // x77age2

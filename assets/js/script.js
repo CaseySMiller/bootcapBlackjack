@@ -119,9 +119,13 @@ decreaseButton.on("click", function () {
   }
 });
 
+confirmButton.on("click", function () {
+  startDeal();
+});
+
 function startDeal() {
   displayDealerCards();
-  // playerPlay();
+  openingDeal();
 }
 
 // Ryan's addition:
@@ -152,11 +156,6 @@ function shuffleDeck() {
 
 // parameters explanation for drawCard function: (where to display the image,  what object to store the image in,  what object to use the img value ie. playerCount (no .val),  object to store the card value in)
 function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
-  console.log(whereImgShow);
-  console.log(whereImgStore);
-  console.log(whereValUse);
-  console.log(whereValStore);
-
   deck_id = localStorage.getItem("deckId");
   if (deck_id === null) {
     return;
@@ -184,46 +183,6 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
       // return;
     });
 }
-
-// function testDrawCard() {
-//   var whereImgShow = nada;
-//   var whereImgStore = dealerHoleCard;
-//   var whereValUse = dealerCount;
-//   // var whereValStore = dealerHoldCard;
-
-//   console.log(whereImgShow);
-//   console.log(whereImgStore);
-//   console.log(whereValUse);
-//   // console.log(whereValStore);
-
-//   // drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
-//   deck_id = localStorage.getItem("deckId");
-//   if (deck_id === null) {
-//     return;
-//   }
-//   var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
-//   fetch(requestUrl)
-//     .then(function (response) {
-//       return response.json();
-//     })
-//     .then(function (data) {
-//       drawCardObj = data;
-//       //   console.log(data);
-//       //call function to display the card image in whereImg
-//       displayCard(drawCardObj.cards[0].image, whereImgShow);
-//       //store img address string to whereImgStore
-//       whereImgStore.img = drawCardObj.cards[0].image;
-
-//       //use the value of the card in whereValuse
-//       useValue(whereValUse, whereValStore, drawCardObj.cards[0]);
-//       // store the value of the drawn card to whereValStore
-//       if (whereValStore == "nada" || typeof whereValStore == "undefined") {
-//       } else {
-//         whereValStore.value = drawCardObj.cards[0];
-//       }
-//       // return;
-//     });
-// }
 
 //function to manipulate the card value taken from drawCard
 //pass an array index or the dealerCount or playerCount variable to where
@@ -331,23 +290,34 @@ function dealerPlay() {
   }
 }
 
-// function for user to play their hand
-function playerPlay() {
-  // var firstCard = $("#firstDealt");
-  // var secondCard = $("#secondDealt");
+function openingDeal() {
   playerCardsEl.empty();
-
   drawCard(
     playerCardsEl,
     PlayerFirstCard.img,
     playerCount,
     PlayerFirstCard.value
   );
+
   drawCard(
     playerCardsEl,
     PlayerSecondCard.img,
     playerCount,
     PlayerSecondCard.value
+  );
+}
+
+// function for user to play their hand
+function playerPlay() {
+  // var firstCard = $("#firstDealt");
+  // var secondCard = $("#secondDealt");
+  // playerCardsEl.empty();
+
+  drawCard(
+    playerCardsEl,
+    PlayerFirstCard.img,
+    playerCount,
+    PlayerFirstCard.value
   );
 
   // console.log(drawCard);
@@ -365,7 +335,7 @@ function playerPlay() {
     console.log("Player stands on " + dealerCount);
     //call function to compare dealer hand to players
   }
-  console.log(playerCount.val);
+  console.log(playerCount);
   // displayCard(PlayerFirstCard, playerCardsEl, cardID);
 }
 // playerPlay();

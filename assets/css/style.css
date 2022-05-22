@@ -92,12 +92,13 @@ footer {
 }
 
 #jukeboxButton {
+	display: flex;
 	position: absolute;
 	width: 14%;
 	font-size: 16px;
 	padding-right: 26px;
 	align-self: flex-end;
-	margin-top: 44%;
+	justify-self: flex-end;
 }
 
 #Jukebox {
@@ -119,6 +120,7 @@ footer {
 	outline-style: solid;
 	outline-color: black;
 	align-self:flex-end ;
+	padding-bottom: 10px;
 }
 
 #chipDisplay {

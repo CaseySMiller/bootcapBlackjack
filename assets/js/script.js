@@ -171,7 +171,6 @@ function useValue(whereUse, whereStore, what) {
     } else {
         thisVal = parseInt(what.value, 10);
     };
-    console.log(thisVal);
 
     // check if whereStore is not defined
     if (whereStore == "nada" || typeof(whereStore) == "undefined") {
@@ -226,13 +225,11 @@ function displayDealerCards () {
         console.log('Dealer has Blackjack, stupid dealer');
         // check if player has blackjack
         if (playerCount.val == 21) {
-          console.log('Push: nobody wins');
         } else {
           playerCount.val = 0;
           dealerPlay();
         };
       };
-      console.log(dealerCount.val);
     }, 1500);
 };
 
@@ -351,13 +348,13 @@ function playerSplit() {
     displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
   //display cards in their respective columns
-  displayCard(PlayerFirstCard.img, currentHandRowEl);
-  displayCard(PlayerSecondCard.img, otherHandsRowEl);
+  // displayCard(PlayerFirstCard.img, currentHandRowEl);
+  // displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
   //store values of split card to other cards array
   playerOtherHands[splitCount][0].value = PlayerSecondCard.value;
   playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
-  playerCount = PlayerFirstCard.value;
+  playerCount.val = PlayerFirstCard.value;
 
   //draw new cards and append images to correct columns
   //adds card values to their respective places and calculates playerCount for current hand
@@ -369,10 +366,11 @@ function playerSplit() {
     playerOtherHands[splitCount][1]
   );
 
+
   // TODO:
   // call play function
   // call function to pull more player chips (maybe in player play function)
-}
+};
 
 // function for doubling down
 function doubleDown() {
@@ -382,7 +380,7 @@ function doubleDown() {
   drawCard(wherePlay, nada, playerCount, nada);
 
   // dealer play and check win/loss
-}
+};
 
 buttonHit.on("click", function () {
   console.log("Hit");

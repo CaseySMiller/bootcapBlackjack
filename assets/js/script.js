@@ -2,6 +2,8 @@ var nada = "nada"; // throwaway parameter for drawCard function
 var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
 var splitCount = -1;
+var unplayedHands = -1;
+var allPlayerCounts = [];
 var hasAce = 0;
 var playerOtherHands = [
   [
@@ -200,7 +202,19 @@ function useValue(whereUse, whereStore, what) {
   } else {
     thisVal = parseInt(what.value, 10);
   }
-  // console.log(thisVal);
+
+  // check if whereStore is not defined
+  if (whereStore == "nada" || typeof whereStore == "undefined") {
+  } else {
+    //store thisVal to whereStore
+    whereStore.value = thisVal;
+  }
+  //check if whereUse is not defined
+  if (whereUse == "nada" || typeof whereUse == "undefined") {
+  } else {
+    //use thisVal in whereUse
+    whereUse.val += thisVal;
+  }
 
   // check if whereStore is not defined
   if (whereStore == "nada" || typeof whereStore == "undefined") {
@@ -246,21 +260,51 @@ function displayDealerCards() {
   drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
   //draw dealer show card and display and save img and val to object and update dealerCount after 500ms
   drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-
   // check for blackjack after 1800ms
   setTimeout(() => {
     if (dealerCount.val == 21) {
       console.log("Dealer has Blackjack, stupid dealer");
       // check if player has blackjack
       if (playerCount.val == 21) {
-        console.log("Push: nobody wins");
+        // Push: return palyer wager
+        console.log("push");
       } else {
+        // dealer wins with Blackjack before player can play
+        // set player count to 0 and run dealerPlay to show this
         playerCount.val = 0;
         dealerPlay();
       }
     }
-    // console.log(dealerCount.val);
   }, 1500);
+}
+
+//function for dealer to play their hand -- not working right
+function dealerPlay() {
+  var dealerStand = false;
+  // show dealer hole card
+  var holeCardEl = dealerCardsEl.children().children().first();
+  holeCardEl.attr("src", dealerHoleCard.img);
+
+  // check dealerCount after 2 seconds
+  dealerCheck();
+  // function to execute proper dealer action
+  function dealerCheck() {
+    if (dealerCount.val < 17) {
+      //dealer draws if under 17
+      drawCard(dealerCardsEl, nada, dealerCount, nada);
+      setTimeout(dealerCheck, 1500);
+    } else if (dealerCount.val > 21) {
+      console.log(dealerCount.val + " dealer BUSTS!");
+      // Dealer Busts: set dealerCount to 0 and run win/loss on all hands
+      dealerCount.val = 0;
+      winLossCheck();
+    } else {
+      console.log("dealer stands on " + dealerCount.val);
+      // Dealer stands on >= 17 call win/loss check
+      winLossCheck();
+    }
+    // console.log(dealerCount.val);
+  }
 }
 
 //function for dealer to play their hand -- not working right
@@ -325,6 +369,7 @@ function playerPlay() {
 //function to handle player splitting cards
 function playerSplit() {
   splitCount++;
+  unplayedHands++;
   // check if player has already split 3 times this hand and return out of function if so
   if (splitCount > 2) {
     alert("too many splitty for you"); //change this to warning modal
@@ -371,14 +416,10 @@ function playerSplit() {
   displayCard(PlayerFirstCard.img, currentHandRowEl);
   displayCard(PlayerSecondCard.img, otherHandsRowEl);
 
-  //display cards in their respective columns
-  displayCard(PlayerFirstCard.img, currentHandRowEl);
-  displayCard(PlayerSecondCard.img, otherHandsRowEl);
-
   //store values of split card to other cards array
   playerOtherHands[splitCount][0].value = PlayerSecondCard.value;
   playerOtherHands[splitCount][0].img = PlayerSecondCard.img;
-  playerCount = PlayerFirstCard.value;
+  playerCount.val = PlayerFirstCard.value;
 
   //draw new cards and append images to correct columns
   //adds card values to their respective places and calculates playerCount for current hand
@@ -395,14 +436,71 @@ function playerSplit() {
   // call function to pull more player chips (maybe in player play function)
 }
 
+//function to chack more hands and move to next hand while storing current hand
+function checkMoreHands() {
+  // append current playerCount to allPlayerCounts array
+  allPlayerCounts.push(playerCount.val);
+  console.log("checking for other hands");
+  console.log(allPlayerCounts);
+  // check if there is an unplayed split hand
+  if (unplayedHands > -1) {
+    console.log("there is an unplayed hand");
+    // subtract this hand from unplayedHands
+    unplayedHands--;
+    // copy current hand to local object array
+
+    // copy [0] index from playerOtherHands to local object array
+
+    // delete [0] index from playerOtherHands and append empty object array to end
+
+    // append html(card images) from current hand to bottom of other hands column
+    // maybe try to shrink it by 50%
+
+    // append split hand from local array to currentPlayer hand
+
+    // call player play function
+  } else {
+    // dealerPlay(); // comment this back in once function works
+  }
+  dealerPlay(); //this is here for testing only
+}
+
+// function to check who wins
+function winLossCheck() {
+  //itterate through array of allPlayerCounts
+  for (i = 0; i < allPlayerCounts.length; i++) {
+    let x = i + 1;
+    if (allPlayerCounts[i] === dealerCount.val) {
+      console.log("Hand " + x + ": Push");
+      // return players wager
+    } else if (allPlayerCounts[i] > dealerCount.val) {
+      console.log("Hand " + x + ": Player wins");
+      // add player wager * 2 back to chips
+    } else {
+      console.log("Hand " + x + ": dealer wins");
+      // player doesnt get chips back -- start new hand
+    }
+  }
+}
+
 // function for doubling down
 function doubleDown() {
   console.log("Double down dummy!");
   // double bet
-  // draw only
-  drawCard(wherePlay, nada, playerCount, nada);
 
-  // dealer play and check win/loss
+  // draw only one card
+  drawCard(wherePlay, nada, playerCount, nada);
+  // check for bust after 1500ms
+  setTimeout(() => {
+    console.log("this count" + playerCount.val);
+    if (playerCount.val > 21) {
+      console.log("Player busts");
+      playerCount.val = 0;
+      checkMoreHands();
+    } else {
+      checkMoreHands();
+    }
+  }, 1500);
 }
 
 // buttonHit.on("click", function () {
@@ -413,8 +511,8 @@ drawBtn.addEventListener("click", playerPlay); // testDrawCard  was drawCard
 
 buttonStand.on("click", function () {
   console.log("Stand");
-  dealerPlay(); //this is here for testing only
-  // myLoop();
+  //check for more hands and lets dealer play when they have all been played
+  checkMoreHands();
 });
 
 buttonSplit.on("click", function () {
@@ -434,8 +532,6 @@ buttonModalSubmit.on("click", function () {
   numOfDecks = selectedDeck;
   // shuffleDeck()
   displayDealerCards();
-  //comment in next line to test dealer play
-  // dealerPlay();
 });
 
 // Dropdown Menu for decks logic
@@ -500,10 +596,63 @@ function invalidActionDisplay() {
   invalidAction.attr("style", "display: flex");
 }
 
-// Buttons for chips and chip count.
+// Daily Motion Api
 
-// var chipCount = $("#counter"); - current stack of chips
-// var increaseButton = $("#add"); - increasing your bet
-// var decreaseButton = $("#subtract"); - decreasing bet
-// var currentWagerAmount = $("#bet"); - current bet
-// var getNewChips = $("#newChips"); - only should be needed at beginning game and then when the stack hits zero
+var song_1 = $("#song_1");
+var song_2 = $("#song_2");
+var song_3 = $("#song_3");
+var jukeboxSrc = $("#jukeboxSrc");
+var Jukebox = $("#Jukebox");
+var DDmenu2 = $("#dropdownMenuButton2");
+
+song_1.on("click", function (event) {
+  event.stopPropagation;
+  $("#dropdownMenuButton2").html(
+    $(this).text() + ' <span class="caret"></span>'
+  );
+  var jukeboxDisplay = document.createElement("script");
+  Jukebox.append(jukeboxDisplay);
+  jukeboxDisplay.setAttribute(
+    "src",
+    "https://geo.dailymotion.com/player/x77age2.js"
+  );
+  jukeboxDisplay.setAttribute("data-video", "xuvoto");
+  jukeboxDisplay.setAttribute("id", "jukeboxSrc");
+});
+song_2.on("click", function (event) {
+  event.stopPropagation;
+  $("#dropdownMenuButton2").html(
+    $(this).text() + ' <span class="caret"></span>'
+  );
+  var jukeboxDisplay = document.createElement("script");
+  Jukebox.append(jukeboxDisplay);
+  jukeboxDisplay.setAttribute(
+    "src",
+    "https://geo.dailymotion.com/player/x77age2.js"
+  );
+  jukeboxDisplay.setAttribute("data-video", "x77age2");
+  jukeboxDisplay.setAttribute("id", "jukeboxSrc");
+});
+song_3.on("click", function (event) {
+  event.stopPropagation;
+  $("#dropdownMenuButton2").html(
+    $(this).text() + ' <span class="caret"></span>'
+  );
+  var jukeboxDisplay = document.createElement("script");
+  Jukebox.append(jukeboxDisplay);
+  jukeboxDisplay.setAttribute(
+    "src",
+    "https://geo.dailymotion.com/player/x77age2.js"
+  );
+  jukeboxDisplay.setAttribute("data-video", "xqcq7x");
+  jukeboxDisplay.setAttribute("id", "jukeboxSrc");
+});
+
+DDmenu2.on("click", function (event) {
+  event.stopPropagation;
+  $("#jukeboxSrc").remove();
+});
+
+// xuvoto
+// x77age2
+// xqcq7x

@@ -84,6 +84,7 @@ var count = 0;
 var stack = localStorage.getItem("stack");
 var bet = 0;
 
+// count = localStorage.getItem("stack");
 chipCount.text(`${count} chips`);
 
 getNewChips.on("click", function () {
@@ -93,6 +94,7 @@ getNewChips.on("click", function () {
     chipCount.text(`${count} chips`);
   } else {
     count;
+    // count = localStorage.getItem("stack");
   }
 });
 
@@ -122,12 +124,13 @@ decreaseButton.on("click", function () {
   }
 });
 
-confirmButton.on("click", function () {
+confirmButton.on("click", function (event) {
+  event.stopPropagation();
   startDeal();
 });
 
 function startDeal() {
-  displayDealerCards();
+  // displayDealerCards();
   openingDeal();
 }
 
@@ -333,30 +336,37 @@ function dealerPlay() {
 
 function openingDeal() {
   playerCardsEl.empty();
-  drawCard(playerCardsEl, PlayerFirstCard, playerCount, playerCount.value);
-
-  drawCard(playerCardsEl, PlayerSecondCard, playerCount, playerCount.value);
+  playerCount.val = 0;
+  drawCard(playerCardsEl, PlayerFirstCard, playerCount, PlayerFirstCard);
+  console.log(playerCount.val);
+  drawCard(playerCardsEl, PlayerSecondCard, playerCount, PlayerSecondCard);
   console.log(playerCount);
 
-  playerPlay();
+  // playerPlay();
 }
 
 // function for user to play their hand
 function playerPlay() {
+  callTest();
+  console.log(playerCount);
   if (playerCount === 21) {
     console.log(
       "Player wins with Blackjack and is paid out 3/2 on their wager"
     ); // run player wins function?
-  } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
-    console.log("Would you like to split your hand?");
-    //playerSplit(); it did not like me running the split function, is that ok?
+    // } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
+    //   console.log("Would you like to split your hand?");
+    //   //playerSplit(); it did not like me running the split function, is that ok?
   } else if (playerCount.val > 21) {
+    console.log(playerCount.val);
+    // console.log(playerCount);
     console.log("Player has bust, Dealer Wins!");
   } else {
     // player must make this decision and if less 21 they have the option to use the "hit" button to get another card, provided they stay under 21 this option will be available?
-    console.log("oh there you are peter");
+    console.log("hit or stand");
+    // console.log(playerCount.val);
+    // console.log(playerCount);
     drawCard(
-      playerCardsEl,
+      wherePlay,
       PlayerFirstCard.img,
       playerCount,
       PlayerFirstCard.value
@@ -532,6 +542,7 @@ buttonModalSubmit.on("click", function () {
   numOfDecks = selectedDeck;
   // shuffleDeck()
   displayDealerCards();
+  // count = localStorage.getItem("stack");
 });
 
 // Dropdown Menu for decks logic

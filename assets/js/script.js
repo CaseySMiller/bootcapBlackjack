@@ -335,14 +335,9 @@ var song_2 = $('#song_2')
 var song_3 = $('#song_3')
 var jukeboxSrc = $('#jukeboxSrc')
 var Jukebox = $('#Jukebox')
-var jukeboxActive = false
-
-console.log(jukeboxSrc)
+var DDmenu2 = $('#dropdownMenuButton2')
 
 song_1.on('click', function (event) {
-    if (jukeboxActive == true) {
-        jukeboxDisplay.remove()
-    }
     event.stopPropagation
     $("#dropdownMenuButton2").html($(this).text() + ' <span class="caret"></span>');
     var jukeboxDisplay = document.createElement("script")
@@ -350,12 +345,8 @@ song_1.on('click', function (event) {
     jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
     jukeboxDisplay.setAttribute("data-video", "xuvoto")
     jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
-    var jukeboxActive = true
 })
 song_2.on('click', function (event) {
-    if (jukeboxActive == true) {
-        jukeboxDisplay.remove()
-    }
     event.stopPropagation
     $("#dropdownMenuButton2").html($(this).text()+' <span class="caret"></span>');
     var jukeboxDisplay = document.createElement("script")
@@ -363,12 +354,8 @@ song_2.on('click', function (event) {
     jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
     jukeboxDisplay.setAttribute("data-video", "x77age2")
     jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
-    var jukeboxActive = true
 })
 song_3.on('click', function (event) {
-    if (jukeboxActive == true) {
-        jukeboxDisplay.remove()
-    }
     event.stopPropagation
     $("#dropdownMenuButton2").html($(this).text()+' <span class="caret"></span>');
     var jukeboxDisplay = document.createElement("script")
@@ -376,7 +363,11 @@ song_3.on('click', function (event) {
     jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
     jukeboxDisplay.setAttribute("data-video", "xqcq7x")
     jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
-    var jukeboxActive = true
+})
+
+DDmenu2.on('click', function (event) {
+    event.stopPropagation
+    $('#jukeboxSrc').remove()
 })
 
 // xuvoto

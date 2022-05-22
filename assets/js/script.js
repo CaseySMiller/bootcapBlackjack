@@ -2,6 +2,7 @@ var nada = "nada"; // throwaway parameter for drawCard function
 var dealerCount = { val: 0 };
 var playerCount = { val: 0 };
 var splitCount = -1;
+var hasAce = 0;
 var playerOtherHands = [
   [
     { value: 0, img: "" },
@@ -167,7 +168,7 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
     })
     .then(function (data) {
       drawCardObj = data;
-      //   console.log(data);
+      // console.log(drawCardObj);
       //call function to display the card image in whereImg
       displayCard(drawCardObj.cards[0].image, whereImgShow);
       //store img address string to whereImgStore
@@ -189,21 +190,17 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
 var thisVal = 0;
 //dealerCount,dealerHoleCard,drawCardObj.cards[0]
 function useValue(whereUse, whereStore, what) {
-  // console.log(what.value);
   thisVal = 0;
   //convert face cards to 10 and ace to 11
   if (what.value == "KING" || what.value == "QUEEN" || what.value == "JACK") {
     thisVal = 10;
-    // console.log('face card');
   } else if (what.value == "ACE") {
-    // console.log('ace');
     thisVal = 11;
+    hasAce++; //adds the fact hat this hand drew an ace
   } else {
-    // console.log('sumthin');
     thisVal = parseInt(what.value, 10);
   }
-  console.log(thisVal);
-  console.log(whereUse);
+  // console.log(thisVal);
 
   // check if whereStore is not defined
   if (whereStore == "nada" || typeof whereStore == "undefined") {
@@ -219,8 +216,9 @@ function useValue(whereUse, whereStore, what) {
   }
 
   //check if an ace put player over 21 and if so makes the ace value=1
-  if (thisVal === 11 && whereUse.val > 21) {
+  if (hasAce > 0 && whereUse.val > 21) {
     whereUse.val -= 10;
+    hasAce--; //show that we used one ace as a 1
   }
   return whereUse.val;
 }
@@ -238,20 +236,6 @@ function displayCard(whatCard, whereCard) {
   cardDiv.append(showThisCard);
 }
 
-// trial sleep function
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-async function Tutor() {
-  document.write("Hello Toturix");
-  for (let i = 1; i < 20; i++) {
-    await sleep(3000);
-    document.write(i + " " + "Welcome to tutorix" + " " + "</br>");
-  }
-}
-// Tutor() //commented out so code doesnt break
-// end trial sleep function
-
 //function to show dealer cards
 function displayDealerCards() {
   // empty dealer conatianer
@@ -262,85 +246,79 @@ function displayDealerCards() {
   drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
   //draw dealer show card and display and save img and val to object and update dealerCount after 500ms
   drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-  console.log(dealerCount);
 
-  // console.log(dealerCardsEl.children([0]).children([0]).attr('src'));
+  // check for blackjack after 1800ms
+  setTimeout(() => {
+    if (dealerCount.val == 21) {
+      console.log("Dealer has Blackjack, stupid dealer");
+      // check if player has blackjack
+      if (playerCount.val == 21) {
+        console.log("Push: nobody wins");
+      } else {
+        playerCount.val = 0;
+        dealerPlay();
+      }
+    }
+    // console.log(dealerCount.val);
+  }, 1500);
 }
 
 //function for dealer to play their hand -- not working right
 function dealerPlay() {
   var dealerStand = false;
   // show dealer hole card
-  var holeCard = dealerCardsEl.children().children().first();
-  holeCard.attr("src", dealerHoleCard.img);
+  var holeCardEl = dealerCardsEl.children().children().first();
+  holeCardEl.attr("src", dealerHoleCard.img);
 
-  console.log(dealerCount);
-
-  //currently does nothing but display the hole card properly and make dealer stand/bust on what they are dealt
-
-  //dealer does not yet draw till >= 17
-
-  if (dealerCount > 21) {
-    console.log("dealer BUSTS");
-    //call player win function
-  } else {
-    console.log("dealer stands on " + dealerCount.val);
-    dealerStand = true;
-    //call function to compare dealer hand to players
+  // check dealerCount after 2 seconds
+  dealerCheck();
+  // function to execute proper dealer action
+  function dealerCheck() {
+    if (dealerCount.val < 17) {
+      drawCard(dealerCardsEl, nada, dealerCount, nada);
+      setTimeout(dealerCheck, 1500);
+    } else if (dealerCount.val > 21) {
+      console.log(dealerCount.val + " dealer BUSTS!");
+      // call win function
+    } else {
+      console.log("dealer stands on " + dealerCount.val);
+      // call win/loss check
+    }
   }
 }
 
 function openingDeal() {
   playerCardsEl.empty();
-  drawCard(
-    playerCardsEl,
-    PlayerFirstCard.img,
-    playerCount,
-    PlayerFirstCard.value
-  );
+  drawCard(playerCardsEl, PlayerFirstCard, playerCount, playerCount.value);
 
-  drawCard(
-    playerCardsEl,
-    PlayerSecondCard.img,
-    playerCount,
-    PlayerSecondCard.value
-  );
+  drawCard(playerCardsEl, PlayerSecondCard, playerCount, playerCount.value);
+  console.log(playerCount);
+
+  playerPlay();
 }
 
 // function for user to play their hand
 function playerPlay() {
-  // var firstCard = $("#firstDealt");
-  // var secondCard = $("#secondDealt");
-  // playerCardsEl.empty();
-
-  drawCard(
-    playerCardsEl,
-    PlayerFirstCard.img,
-    playerCount,
-    PlayerFirstCard.value
-  );
-
-  // console.log(drawCard);
-
   if (playerCount === 21) {
     console.log(
       "Player wins with Blackjack and is paid out 3/2 on their wager"
     ); // run player wins function?
   } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
-    console.log("Would you like to split your hand?"); // run playerSplit()?
-  } else if (currentHandTotal < 21) {
-    // this function needs to be created
-    console.log("Would you like to hit or stand?"); // should this be an alert or modal?
+    console.log("Would you like to split your hand?");
+    //playerSplit(); it did not like me running the split function, is that ok?
+  } else if (playerCount.val > 21) {
+    console.log("Player has bust, Dealer Wins!");
   } else {
-    console.log("Player stands on " + dealerCount);
-    //call function to compare dealer hand to players
+    // player must make this decision and if less 21 they have the option to use the "hit" button to get another card, provided they stay under 21 this option will be available?
+    console.log("oh there you are peter");
+    drawCard(
+      playerCardsEl,
+      PlayerFirstCard.img,
+      playerCount,
+      PlayerFirstCard.value
+    );
   }
-  console.log(playerCount);
-  // displayCard(PlayerFirstCard, playerCardsEl, cardID);
 }
-// playerPlay();
-// comment in next line to test dealer play
-// dealerPlay();
 
 //this is a testing function only and is not used anywhere in the aplication
 

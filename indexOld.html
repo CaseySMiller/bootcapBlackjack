@@ -99,21 +99,21 @@
     <div id="chipDisplay">
         <div class="row">
             <p>
-                Chips: <span id="counter">0</span>
+                Chips: <span id="chipCount">0</span>
             </p>
             <p>
-                Wager: <span id="bet">0</span>
+                Wager: <span id="currentWagerAmount">0</span>
             </p>
         </div>
         <div>
-            <button id="add">
+            <button id="increaseButton">
             +
             </button>
-            <button id="subtract">
+            <button id="decreaseButton">
             -
             </button>
         <div></div>
-            <button id="newChips">
+            <button id="getNewChips">
             Get More Chips
             </button>
         <div></div>
@@ -125,17 +125,8 @@
     </main>
 
     <div id="Jukebox">Jukebox!
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                    Pick a song!
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                <li><a class="dropdown-item h4" id="song_1" href="#">Sammy's Saloon</a></li>
-                <li><a class="dropdown-item h4" id="song_2" href="#">Country Western Favourites</a></li>
-                <li><a class="dropdown-item h4" id="song_3" href="#">Jay Ryan Beretti "My life"</a></li>
-            </ul>
-        </div>
+        <input id="jukeboxEntry" placeholder="Enter a song to play in the jukebox!"></input>
+        <button id="jukeboxButton">✔️</button>
     </div>
     <!--popper.js  (bootstraps 3rd party js MUST BE BEFORE BOOTSTRAP)-->
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>

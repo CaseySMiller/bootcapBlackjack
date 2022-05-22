@@ -136,8 +136,6 @@ var drawCardObj = {};
 
 shuffleBtn.addEventListener("click", shuffleDeck);
 
-drawBtn.addEventListener("click", drawCard);
-
 function shuffleDeck() {
   var requestUrl = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${numOfDecks}`;
 
@@ -154,7 +152,15 @@ function shuffleDeck() {
 
 // parameters explanation for drawCard function: (where to display the image,  what object to store the image in,  what object to use the img value ie. playerCount (no .val),  object to store the card value in)
 function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
+  console.log(whereImgShow);
+  console.log(whereImgStore);
+  console.log(whereValUse);
+  console.log(whereValStore);
+
   deck_id = localStorage.getItem("deckId");
+  if (deck_id === null) {
+    return;
+  }
   var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
   fetch(requestUrl)
     .then(function (response) {
@@ -178,6 +184,46 @@ function drawCard(whereImgShow, whereImgStore, whereValUse, whereValStore) {
       // return;
     });
 }
+
+// function testDrawCard() {
+//   var whereImgShow = nada;
+//   var whereImgStore = dealerHoleCard;
+//   var whereValUse = dealerCount;
+//   // var whereValStore = dealerHoldCard;
+
+//   console.log(whereImgShow);
+//   console.log(whereImgStore);
+//   console.log(whereValUse);
+//   // console.log(whereValStore);
+
+//   // drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
+//   deck_id = localStorage.getItem("deckId");
+//   if (deck_id === null) {
+//     return;
+//   }
+//   var requestUrl = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=1`;
+//   fetch(requestUrl)
+//     .then(function (response) {
+//       return response.json();
+//     })
+//     .then(function (data) {
+//       drawCardObj = data;
+//       //   console.log(data);
+//       //call function to display the card image in whereImg
+//       displayCard(drawCardObj.cards[0].image, whereImgShow);
+//       //store img address string to whereImgStore
+//       whereImgStore.img = drawCardObj.cards[0].image;
+
+//       //use the value of the card in whereValuse
+//       useValue(whereValUse, whereValStore, drawCardObj.cards[0]);
+//       // store the value of the drawn card to whereValStore
+//       if (whereValStore == "nada" || typeof whereValStore == "undefined") {
+//       } else {
+//         whereValStore.value = drawCardObj.cards[0];
+//       }
+//       // return;
+//     });
+// }
 
 //function to manipulate the card value taken from drawCard
 //pass an array index or the dealerCount or playerCount variable to where
@@ -286,35 +332,44 @@ function dealerPlay() {
 }
 
 // function for user to play their hand
-// function playerPlay() {
-//   var firstCard = $("#firstDealt");
-//   var secondCard = $("#secondDealt");
-//   playerCardsEl.empty();
+function playerPlay() {
+  // var firstCard = $("#firstDealt");
+  // var secondCard = $("#secondDealt");
+  playerCardsEl.empty();
 
-//   drawCard(playerCardsEl, "firstCard");
-//   console.log(firstCard);
-//   drawCard(playerCardsEl, "secondCard");
-//   console.log(secondCard);
-//   playerCount = PlayerFirstCard.value + PlayerSecondCard.value;
+  drawCard(
+    playerCardsEl,
+    PlayerFirstCard.img,
+    playerCount,
+    PlayerFirstCard.value
+  );
+  drawCard(
+    playerCardsEl,
+    PlayerSecondCard.img,
+    playerCount,
+    PlayerSecondCard.value
+  );
 
-//   if (playerCount === 21) {
-//     console.log(
-//       "Player wins with Blackjack and is paid out 3/2 on their wager"
-//     ); // run player wins function?
-//   } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
-//     console.log("Would you like to split your hand?"); // run playerSplit()?
-//   } else if (currentHandTotal < 21) {
-//     // this function needs to be created
-//     console.log("Would you like to hit or stand?"); // should this be an alert or modal?
-//   } else {
-//     console.log("Player stands on " + dealerCount);
-//     //call function to compare dealer hand to players
-//   }
+  // console.log(drawCard);
 
-//   // displayCard(PlayerFirstCard, playerCardsEl, cardID);
-// }
+  if (playerCount === 21) {
+    console.log(
+      "Player wins with Blackjack and is paid out 3/2 on their wager"
+    ); // run player wins function?
+  } else if (PlayerFirstCard.value === PlayerSecondCard.value) {
+    console.log("Would you like to split your hand?"); // run playerSplit()?
+  } else if (currentHandTotal < 21) {
+    // this function needs to be created
+    console.log("Would you like to hit or stand?"); // should this be an alert or modal?
+  } else {
+    console.log("Player stands on " + dealerCount);
+    //call function to compare dealer hand to players
+  }
+  console.log(playerCount.val);
+  // displayCard(PlayerFirstCard, playerCardsEl, cardID);
+}
 // playerPlay();
-//comment in next line to test dealer play
+// comment in next line to test dealer play
 // dealerPlay();
 
 //this is a testing function only and is not used anywhere in the aplication
@@ -402,9 +457,11 @@ function doubleDown() {
   // dealer play and check win/loss
 }
 
-buttonHit.on("click", function () {
-  console.log("Hit");
-});
+// buttonHit.on("click", function () {
+//   console.log("Hit");
+// });
+
+drawBtn.addEventListener("click", playerPlay); // testDrawCard  was drawCard
 
 buttonStand.on("click", function () {
   console.log("Stand");

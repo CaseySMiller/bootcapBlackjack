@@ -153,9 +153,6 @@ function displayDealerCards () {
     drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
     //draw dealer show card and display and save img and val to object and update dealerCount
     drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-    console.log(dealerShowCard);
-    console.log(dealerHoleCard);
-
 };
 
 
@@ -331,11 +328,57 @@ function invalidActionDisplay() {
     invalidAction.attr("style", "display: flex")
 }
 
+// Daily Motion Api
 
-// Buttons for chips and chip count.
+var song_1 = $('#song_1')
+var song_2 = $('#song_2')
+var song_3 = $('#song_3')
+var jukeboxSrc = $('#jukeboxSrc')
+var Jukebox = $('#Jukebox')
+var jukeboxActive = false
 
-// var chipCount = $("#counter"); - current stack of chips
-// var increaseButton = $("#add"); - increasing your bet
-// var decreaseButton = $("#subtract"); - decreasing bet
-// var currentWagerAmount = $("#bet"); - current bet
-// var getNewChips = $("#newChips"); - only should be needed at beginning game and then when the stack hits zero
+console.log(jukeboxSrc)
+
+song_1.on('click', function (event) {
+    if (jukeboxActive == true) {
+        jukeboxDisplay.remove()
+    }
+    event.stopPropagation
+    $("#dropdownMenuButton2").html($(this).text() + ' <span class="caret"></span>');
+    var jukeboxDisplay = document.createElement("script")
+    Jukebox.append(jukeboxDisplay)
+    jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
+    jukeboxDisplay.setAttribute("data-video", "xuvoto")
+    jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
+    var jukeboxActive = true
+})
+song_2.on('click', function (event) {
+    if (jukeboxActive == true) {
+        jukeboxDisplay.remove()
+    }
+    event.stopPropagation
+    $("#dropdownMenuButton2").html($(this).text()+' <span class="caret"></span>');
+    var jukeboxDisplay = document.createElement("script")
+    Jukebox.append(jukeboxDisplay)
+    jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
+    jukeboxDisplay.setAttribute("data-video", "x77age2")
+    jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
+    var jukeboxActive = true
+})
+song_3.on('click', function (event) {
+    if (jukeboxActive == true) {
+        jukeboxDisplay.remove()
+    }
+    event.stopPropagation
+    $("#dropdownMenuButton2").html($(this).text()+' <span class="caret"></span>');
+    var jukeboxDisplay = document.createElement("script")
+    Jukebox.append(jukeboxDisplay)
+    jukeboxDisplay.setAttribute("src", "https://geo.dailymotion.com/player/x77age2.js")
+    jukeboxDisplay.setAttribute("data-video", "xqcq7x")
+    jukeboxDisplay.setAttribute("id", 'jukeboxSrc')
+    var jukeboxActive = true
+})
+
+// xuvoto
+// x77age2
+// xqcq7x

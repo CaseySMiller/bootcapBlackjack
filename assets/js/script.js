@@ -254,7 +254,7 @@ function useValue(whereUse, whereStore, what) {
   //convert face cards to 10 and ace to 11
   if (what.value == "KING" || what.value == "QUEEN" || what.value == "JACK") {
     thisVal = 10;
-  } else if (what.value == "ACE") {
+  } else if (what.value == "ACE" || what.raw == "ACE") {
     thisVal = 11;
     hasAce++; //adds the fact that this hand drew an ace
   } else {
@@ -319,7 +319,9 @@ function dealerPlay() {
   dealerCheck();
   // function to execute proper dealer action
   function dealerCheck() {
-    if (dealerCount.val < 17) {
+    if (playerCount.val == -1) {
+      winLossCheck();
+    } else if (dealerCount.val < 17) {
       //dealer draws if under 17
       drawCard(dealerCardsEl, drawnCard, dealerCount, drawnCard);
       setTimeout(dealerCheck, 1500);
@@ -390,11 +392,10 @@ function playerHit() {
 }
 
 function playerCheck() {
-  console.log(playerCount);
   if (playerCount.val > 21) {
     console.log("Player busts, Dealer Wins!");
-    let x = 0;
-    allPlayerCounts.push(x);
+    playerCount.val = -1;
+    allPlayerCounts.push(playerCount.val);
     checkMoreHands();
   } else {
     // player must make this decision and if less 21 they have the option to use the "hit" button to get another card, provided they stay under 21 this option will be available?
@@ -438,7 +439,7 @@ function playerSplit() {
     playingColElLeft.append(currentHandRowEl);
     // update wherePlay variable to play in this new row
     wherePlay = currentHandRowEl;
-    // append row for current hand title to left playing area column
+    // append row for other hand title to right playing area column
     var otherHandTitleRowEl = $("<div>");
     otherHandTitleRowEl.addClass("d-flex flex-row name-plate fs-2 fw-b m-2");
     otherHandTitleRowEl.text("Next Hands");
@@ -490,7 +491,8 @@ function doubleDown() {
     console.log("this count" + playerCount.val);
     if (playerCount.val > 21) {
       console.log("Player busts");
-      playerCount.val = 0;
+      playerCount.val = -1;
+      allPlayerCounts.push(playerCount.val);
       checkMoreHands();
     } else {
       allPlayerCounts.push(playerCount.val);
@@ -501,32 +503,61 @@ function doubleDown() {
 
 //function to chack more hands and move to next hand while storing current hand
 function checkMoreHands() {
+  let currentHtml = "";
   console.log("checking for other hands");
   // check if there is an unplayed split hand
   if (unplayedHands > -1) {
     console.log("there is an unplayed hand");
-    // subtract this hand from unplayedHands
-    unplayedHands--;
-    // copy current hand to local object array
+    // copy current hand to currentHtml
+    currentHtml = wherePlay.html();
+    // copy [0] index from playerOtherHands to playerFirstCard and PlayerSecondCard
+    PlayerFirstCard = playerOtherHands[0][0];
+    console.log(PlayerFirstCard);
+    PlayerSecondCard = playerOtherHands[0][1];
+    // run current player cards through useValue function to calculate new playerCount
+    playerCount.val = 0;
+    useValue(playerCount, PlayerFirstCard, PlayerFirstCard);
+    useValue(playerCount, PlayerSecondCard, PlayerSecondCard);
 
-    // copy [0] index from playerOtherHands to local object array
+    // create a row element
+    otherHandsRowEl = $("<div>");
+    otherHandsRowEl.addClass("d-flex flex-row");
+    let x = unplayedHands + 1;
+    otherHandsRowEl.attr("id", "finished-hand-" + x);
+    // append html(card images) from current hand to new row
+    // maybe try to shrink it by 50%
+    otherHandsRowEl.html(currentHtml);
+    //append new row to bottom of right column
+    playingColElRight.append(otherHandsRowEl);
+    //remove top card row of right column
+    console.log(playingColElRight.children().eq(1));
+    playingColElRight.children().eq(1).remove();
+
+    // display split hand from card variables to current hand
+    wherePlay.empty();
+    displayCard(PlayerFirstCard.img, wherePlay);
+    displayCard(PlayerSecondCard.img, wherePlay);
 
     // delete [0] index from playerOtherHands and append empty object array to end
-
-    // append html(card images) from current hand to bottom of other hands column
-    // maybe try to shrink it by 50%
-
-    // append split hand from local array to currentPlayer hand
+    playerOtherHands.splice(0, 1);
+    let emptyArray = [
+      { value: 0, img: "", raw: "" },
+      { value: 0, img: "", raw: "" },
+    ];
+    playerOtherHands.push(emptyArray);
+    // subtract this hand from unplayedHands
+    unplayedHands--;
 
     // call player play function
+    playerPlay();
   } else {
-    // dealerPlay(); // comment this back in once function works
+    dealerPlay();
   }
-  dealerPlay(); //this is here for testing only
 }
 
-// function to check who wins
+// function to check who wins -- called from dealerPlay
 function winLossCheck() {
+  console.log(allPlayerCounts);
   //itterate through array of allPlayerCounts
   for (i = 0; i < allPlayerCounts.length; i++) {
     let x = i + 1;

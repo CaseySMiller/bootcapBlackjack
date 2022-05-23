@@ -7,16 +7,16 @@ var allPlayerCounts = [];
 var hasAce = 0;
 var playerOtherHands = [
   [
-    { value: 0, img: "", raw: ""},
-    { value: 0, img: "", raw: ""},
+    { value: 0, img: "", raw: "" },
+    { value: 0, img: "", raw: "" },
   ], //0 -- other hand for players first split
   [
-    { value: 0, img: "", raw: ""},
-    { value: 0, img: "", raw: ""},
+    { value: 0, img: "", raw: "" },
+    { value: 0, img: "", raw: "" },
   ], //1 -- other hand for players second split
   [
-    { value: 0, img: "", raw: ""},
-    { value: 0, img: "", raw: ""}
+    { value: 0, img: "", raw: "" },
+    { value: 0, img: "", raw: "" },
   ], //2 -- other hand for playes third split
 ];
 
@@ -29,27 +29,27 @@ var faceDownCard = {
 var drawnCard = {
   value: 10,
   img: "https://deckofcardsapi.com/static/img/KH.png",
-  raw: ""
+  raw: "",
 };
 var dealerShowCard = {
   value: 5,
   img: "https://deckofcardsapi.com/static/img/KH.png",
-   raw: ""
+  raw: "",
 };
 var dealerHoleCard = {
   value: 10,
   img: "https://deckofcardsapi.com/static/img/KH.png",
-  raw: ""
+  raw: "",
 };
 var PlayerFirstCard = {
   value: 8,
   img: "https://deckofcardsapi.com/static/img/8H.png",
-  raw: "8"
+  raw: "8",
 };
 var PlayerSecondCard = {
   value: 8,
   img: "https://deckofcardsapi.com/static/img/8C.png",
-  raw: "8"
+  raw: "8",
 };
 
 // declare elements for splitting hands
@@ -78,31 +78,36 @@ var deck_4 = $("#deck_4");
 var deck_5 = $("#deck_5");
 var deck_6 = $("#deck_6");
 
-// Ryan's attempt at starting  chip stack
+// variables for the chips and betting
+var playAgainButton = $("#playAgain");
 var confirmButton = $("#confirmWager");
 var chipCount = $("#counter");
 var increaseButton = $("#add");
 var decreaseButton = $("#subtract");
 var currentWagerAmount = $("#bet");
 var getNewChips = $("#newChips");
-var count = 0;
-var stack = localStorage.getItem("stack");
+var count = localStorage.getItem("stack");
 var bet = 0;
+// var count = 0;
 
+// setting local storage
 // count = localStorage.getItem("stack");
-chipCount.text(`${count} chips`);
+if (count) {
+  chipCount.text(`${count} chips`);
+}
 
+// request a new stack of chips
 getNewChips.on("click", function () {
-  if (count === 0) {
+  if (count === 0 || !count) {
     count = 50;
     localStorage.setItem("stack", count);
     chipCount.text(`${count} chips`);
   } else {
     count;
-    // count = localStorage.getItem("stack");
   }
 });
 
+// increasing your bet and reducing size of stack
 increaseButton.on("click", function () {
   if (count >= 1) {
     bet++;
@@ -119,6 +124,7 @@ increaseButton.on("click", function () {
   }
 });
 
+// decreasing bet and increasing size of stack
 decreaseButton.on("click", function () {
   if (count >= 0 && bet > 0) {
     count++;
@@ -128,6 +134,46 @@ decreaseButton.on("click", function () {
     localStorage.setItem("stack", count);
   }
 });
+
+function payTheMan(string) {
+  if (string === "push") {
+    // console.log("i ran push")
+    bet += count;
+    counter.textContent = count;
+    localStorage.setItem("stack", count);
+  } else if (string === "blackJack") {
+    // console.log("i ran blackjack")
+    count = bet * 2.5 + count;
+    counter.textContent = count;
+    localStorage.setItem("stack", count);
+  } else if (string === "winner") {
+    // console.log("i ran winner")
+    count = bet * 2 + count;
+    counter.textContent = count;
+    localStorage.setItem("stack", count);
+  } else {
+    console.log("i ran lost");
+    count;
+  }
+  var btn = document.createElement("button");
+  btn.innerHTML = "Click to Play Again";
+  btn.onclick = function () {
+    window.location.reload();
+  };
+  document.body.appendChild(btn);
+}
+
+// function restartGame() {
+//   displayDealerCards();
+//   openingDeal();
+//   var dealerCount = { val: 0 };
+//   var playerCount = { val: 0 };
+//   var splitCount = -1;
+//   var unplayedHands = -1;
+//   var allPlayerCounts = [];
+//   var hasAce = 0;
+//   allPlayerCounts = [];
+// }
 
 confirmButton.on("click", function (event) {
   event.stopPropagation();
@@ -140,7 +186,7 @@ function startDeal() {
   // openingDeal();
 }
 
-// Ryan's addition:
+// Initial fetch request from card's api to get deck id#
 var shuffleBtn = document.getElementById("buttonShuffle");
 
 var drawBtn = document.getElementById("buttonHit");
@@ -228,7 +274,6 @@ function useValue(whereUse, whereStore, what) {
     whereUse.val += thisVal;
   }
 
-
   //check if an ace put player over 21 and if so makes the ace value=1
   if (hasAce > 0 && whereUse.val > 21) {
     whereUse.val -= 10;
@@ -248,7 +293,7 @@ function displayCard(whatCard, whereCard) {
   showThisCard.attr("src", whatCard);
   whereCard.append(cardDiv);
   cardDiv.append(showThisCard);
-};
+}
 
 //function to show dealer cards
 function displayDealerCards() {
@@ -262,7 +307,7 @@ function displayDealerCards() {
   drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
   // deal player hand
   openingDeal();
-};
+}
 
 //function for dealer to play their hand -- not working right
 function dealerPlay() {
@@ -274,7 +319,7 @@ function dealerPlay() {
   dealerCheck();
   // function to execute proper dealer action
   function dealerCheck() {
-    if (playerCount.val == -1){
+    if (playerCount.val == -1) {
       winLossCheck();
     } else if (dealerCount.val < 17) {
       //dealer draws if under 17
@@ -292,7 +337,7 @@ function dealerPlay() {
     }
     // console.log(dealerCount.val);
   }
-};
+}
 
 function openingDeal() {
   wherePlay.empty();
@@ -300,11 +345,11 @@ function openingDeal() {
   drawCard(wherePlay, PlayerFirstCard, playerCount, PlayerFirstCard);
   drawCard(wherePlay, PlayerSecondCard, playerCount, PlayerSecondCard);
   // call playerPlay function after 1.5sec
-  setTimeout(function() {
+  setTimeout(function () {
     if (dealerCount.val == 21) {
       console.log("Dealer has Blackjack, stupid dealer");
       // check if player has blackjack
-      if (playerCount.val == 21) {  
+      if (playerCount.val == 21) {
         // Push: return player wager
         // run dealer play to display this
         dealerPlay();
@@ -314,28 +359,29 @@ function openingDeal() {
         // set player count to 0 and run dealerPlay to show this
         allPlayerCounts.push(0);
         dealerPlay();
-      };
+      }
     } else {
       playerPlay();
-    };
+    }
   }, 1500);
-};
+}
 
 // function for user to play their hand
 function playerPlay() {
-
   //check for blackjack
-  if (playerCount === 21) { 
-    console.log("Player wins with Blackjack and is paid out 3/2 on their wager");
+  if (playerCount === 21) {
+    console.log(
+      "Player wins with Blackjack and is paid out 3/2 on their wager"
+    );
     // add 'blackjack' to end of allPlayerCounts array and check if there are more hands
     // if no unplayed hands exist dealer will play and check win/loss
-    allPlayerCounts.push('blackjack');
+    allPlayerCounts.push("blackjack");
     checkMoreHands();
   } else {
     // check player count and then let player hit/stand/split/dd
     playerCheck();
-  };
-};
+  }
+}
 
 // function for player hit
 function playerHit() {
@@ -343,9 +389,9 @@ function playerHit() {
   drawCard(wherePlay, drawnCard, playerCount, drawnCard);
   //after 1.5sec check playerCount
   setTimeout(playerCheck, 1500);
-};
+}
 
-function playerCheck (){
+function playerCheck() {
   if (playerCount.val > 21) {
     console.log("Player busts, Dealer Wins!");
     playerCount.val = -1;
@@ -360,9 +406,9 @@ function playerCheck (){
 //function to handle player splitting cards
 function playerSplit() {
   if (PlayerFirstCard.raw !== PlayerSecondCard.raw) {
-    console.log('You can only split 2 of the same cards');
+    console.log("You can only split 2 of the same cards");
     return;
-  };
+  }
   splitCount++;
   unplayedHands++;
   // check if player has already split 3 times this hand and return out of function if so
@@ -407,7 +453,6 @@ function playerSplit() {
   otherHandsRowEl.attr("id", "splitHand" + splitCount);
   playingColElRight.append(otherHandsRowEl);
 
-
   //display cards in their respective columns
   displayCard(PlayerFirstCard.img, currentHandRowEl);
   displayCard(PlayerSecondCard.img, otherHandsRowEl);
@@ -421,13 +466,18 @@ function playerSplit() {
   //draw new cards and append images to correct columns
   //adds card values to their respective places and calculates playerCount for current hand
   drawCard(currentHandRowEl, PlayerSecondCard, playerCount, PlayerSecondCard);
-  drawCard(otherHandsRowEl, playerOtherHands[splitCount][1], nada, playerOtherHands[splitCount][1]);
-  
+  drawCard(
+    otherHandsRowEl,
+    playerOtherHands[splitCount][1],
+    nada,
+    playerOtherHands[splitCount][1]
+  );
+
   // call play function
   setTimeout(playerPlay, 1500);
   // TODO:
   // call function to pull more player chips (maybe in player play function)
-};
+}
 
 // function for doubling down
 function doubleDown() {
@@ -449,7 +499,7 @@ function doubleDown() {
       checkMoreHands();
     }
   }, 1500);
-};
+}
 
 //function to chack more hands and move to next hand while storing current hand
 function checkMoreHands() {
@@ -490,7 +540,10 @@ function checkMoreHands() {
 
     // delete [0] index from playerOtherHands and append empty object array to end
     playerOtherHands.splice(0, 1);
-    let emptyArray = [{ value: 0, img: "", raw: ""}, { value: 0, img: "", raw: ""}];
+    let emptyArray = [
+      { value: 0, img: "", raw: "" },
+      { value: 0, img: "", raw: "" },
+    ];
     playerOtherHands.push(emptyArray);
     // subtract this hand from unplayedHands
     unplayedHands--;
@@ -499,8 +552,8 @@ function checkMoreHands() {
     playerPlay();
   } else {
     dealerPlay();
-  };
-};
+  }
+}
 
 // function to check who wins -- called from dealerPlay
 function winLossCheck() {
@@ -511,15 +564,19 @@ function winLossCheck() {
     if (allPlayerCounts[i] === dealerCount.val) {
       console.log("Hand " + x + ": Push");
       // return players wager
-    } else if (allPlayerCounts[i] == 'blackJack') {
-      console.log ('Player has Blackjack!!');
+      return payTheMan("push");
+    } else if (allPlayerCounts[i] == "blackJack") {
+      console.log("Player has Blackjack!!");
       // add player wager * 2.5 to chips
+      return payTheMan("blackJack");
     } else if (allPlayerCounts[i] > dealerCount.val) {
       console.log("Hand " + x + ": Player wins");
       // add player wager * 2 back to chips
+      return payTheMan("winner");
     } else {
       console.log("Hand " + x + ": dealer wins");
       // player doesnt get chips back -- start new hand
+      return payTheMan("loser");
     }
   }
 }
@@ -528,11 +585,10 @@ function winLossCheck() {
 //   console.log("Hit");
 // });
 
-drawBtn.addEventListener("click", function() {
-  console.log('player hits');
+drawBtn.addEventListener("click", function () {
+  console.log("player hits");
   playerHit();
-}
-);
+});
 
 buttonStand.on("click", function () {
   console.log("Stand");

@@ -136,7 +136,8 @@ confirmButton.on("click", function (event) {
 
 function startDeal() {
   // displayDealerCards();
-  openingDeal();
+  displayDealerCards();
+  // openingDeal();
 }
 
 // Ryan's addition:
@@ -222,10 +223,8 @@ function useValue(whereUse, whereStore, what) {
   }
   //check if whereUse is not defined
   if (whereUse == "nada" || typeof whereUse == "undefined") {
-    console.log('whereUse is undefinde');
   } else {
     //use thisVal in whereUse
-    console.log(thisVal);
     whereUse.val += thisVal;
   }
 
@@ -261,23 +260,9 @@ function displayDealerCards() {
   drawCard(nada, dealerHoleCard, dealerCount, dealerHoleCard);
   //draw dealer show card and display and save img and val to object and update dealerCount after 500ms
   drawCard(dealerCardsEl, dealerShowCard, dealerCount, dealerShowCard);
-  // check for blackjack after 1800ms
-  setTimeout(() => {
-    if (dealerCount.val == 21) {
-      console.log("Dealer has Blackjack, stupid dealer");
-      // check if player has blackjack
-      if (playerCount.val == 21) {       //this needs work
-        // Push: return player wager
-        console.log("push");
-      } else {
-        // dealer wins with Blackjack before player can play
-        // set player count to 0 and run dealerPlay to show this
-        playerCount.val = 0;
-        dealerPlay();
-      }
-    }
-  }, 1500);
-}
+  // deal player hand
+  openingDeal();
+};
 
 //function for dealer to play their hand -- not working right
 function dealerPlay() {
@@ -289,11 +274,10 @@ function dealerPlay() {
   dealerCheck();
   // function to execute proper dealer action
   function dealerCheck() {
-    console.log(dealerCount.val);
     if (dealerCount.val < 17) {
       //dealer draws if under 17
       drawCard(dealerCardsEl, drawnCard, dealerCount, drawnCard);
-      setTimeout(dealerCheck, 3000);
+      setTimeout(dealerCheck, 1500);
     } else if (dealerCount.val > 21) {
       console.log(dealerCount.val + " dealer BUSTS!");
       // Dealer Busts: set dealerCount to 0 and run win/loss on all hands
@@ -309,17 +293,34 @@ function dealerPlay() {
 };
 
 function openingDeal() {
-  playerCardsEl.empty();
+  wherePlay.empty();
   playerCount.val = 0;
   drawCard(wherePlay, PlayerFirstCard, playerCount, PlayerFirstCard);
   drawCard(wherePlay, PlayerSecondCard, playerCount, PlayerSecondCard);
   // call playerPlay function after 1.5sec
-  setTimeout(function() {playerPlay()}, 1500);
+  setTimeout(function() {
+    if (dealerCount.val == 21) {
+      console.log("Dealer has Blackjack, stupid dealer");
+      // check if player has blackjack
+      if (playerCount.val == 21) {  
+        // Push: return player wager
+        // run dealer play to display this
+        dealerPlay();
+        console.log("push");
+      } else {
+        // dealer wins with Blackjack before player can play
+        // set player count to 0 and run dealerPlay to show this
+        allPlayerCounts.push(0);
+        dealerPlay();
+      };
+    } else {
+      playerPlay();
+    };
+  }, 1500);
 };
 
 // function for user to play their hand
 function playerPlay() {
-  console.log(playerCount);
 
   //check for blackjack
   if (playerCount === 21) { 
@@ -339,22 +340,21 @@ function playerHit() {
   //draw a card and add it to current hand
   drawCard(wherePlay, drawnCard, playerCount, drawnCard);
   //after 1.5sec check playerCount
-  setTimeout(playerCheck(), 1500);
+  setTimeout(playerCheck, 1500);
 };
 
-  function playerCheck (){
-    if (playerCount.val > 21) {
-      console.log(playerCount.val);
-      console.log("Player has bust, Dealer Wins!");
-      allPlayerCounts.push(0);
-      checkMoreHands();
-    } else {
-      // player must make this decision and if less 21 they have the option to use the "hit" button to get another card, provided they stay under 21 this option will be available?
-      console.log("hit or stand");
-      console.log(playerCount);
-    }
+function playerCheck (){
+  console.log(playerCount);
+  if (playerCount.val > 21) {
+    console.log("Player busts, Dealer Wins!");
+    let x = 0;
+    allPlayerCounts.push(x);
+    checkMoreHands();
+  } else {
+    // player must make this decision and if less 21 they have the option to use the "hit" button to get another card, provided they stay under 21 this option will be available?
+    console.log("hit or stand");
   }
-  
+}
 
 //function to handle player splitting cards
 function playerSplit() {
@@ -420,15 +420,11 @@ function playerSplit() {
   //draw new cards and append images to correct columns
   //adds card values to their respective places and calculates playerCount for current hand
   drawCard(currentHandRowEl, PlayerSecondCard, playerCount, PlayerSecondCard);
-  drawCard(
-    otherHandsRowEl,
-    playerOtherHands[splitCount][1],
-    nada,
-    playerOtherHands[splitCount][1]
-  );
-
-  // TODO:
+  drawCard(otherHandsRowEl, playerOtherHands[splitCount][1], nada, playerOtherHands[splitCount][1]);
+  
   // call play function
+  setTimeout(playerPlay, 1500);
+  // TODO:
   // call function to pull more player chips (maybe in player play function)
 };
 
@@ -438,7 +434,7 @@ function doubleDown() {
   // double bet
 
   // draw only one card
-  drawCard(wherePlay, nada, playerCount, nada);
+  drawCard(wherePlay, drawnCard, playerCount, drawnCard);
   // check for bust after 1500ms
   setTimeout(() => {
     console.log("this count" + playerCount.val);
@@ -447,7 +443,7 @@ function doubleDown() {
       playerCount.val = 0;
       checkMoreHands();
     } else {
-      allPlayerCounts.push(playerCount);
+      allPlayerCounts.push(playerCount.val);
       checkMoreHands();
     }
   }, 1500);
@@ -456,7 +452,6 @@ function doubleDown() {
 //function to chack more hands and move to next hand while storing current hand
 function checkMoreHands() {
   console.log("checking for other hands");
-  console.log(allPlayerCounts);
   // check if there is an unplayed split hand
   if (unplayedHands > -1) {
     console.log("there is an unplayed hand");
@@ -488,7 +483,7 @@ function winLossCheck() {
     if (allPlayerCounts[i] === dealerCount.val) {
       console.log("Hand " + x + ": Push");
       // return players wager
-    } else if (allPlayerCounts[i] === 'blackJack') {
+    } else if (allPlayerCounts[i] == 'blackJack') {
       console.log ('Player has Blackjack!!');
       // add player wager * 2.5 to chips
     } else if (allPlayerCounts[i] > dealerCount.val) {
@@ -514,7 +509,7 @@ drawBtn.addEventListener("click", function() {
 buttonStand.on("click", function () {
   console.log("Stand");
   // add playerCount to end of allPlayerCounts array
-  allPlayerCounts.push(playerCount);
+  allPlayerCounts.push(playerCount.val);
   //check for more hands and lets dealer play when they have all been played
   checkMoreHands();
 });
@@ -534,8 +529,6 @@ buttonShuffle.on("click", function () {
 buttonModalSubmit.on("click", function () {
   startModal.attr("style", "display: none");
   numOfDecks = selectedDeck;
-  // shuffleDeck()
-  displayDealerCards();
   // count = localStorage.getItem("stack");
 });
 

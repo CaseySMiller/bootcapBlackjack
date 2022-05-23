@@ -138,7 +138,7 @@ decreaseButton.on("click", function () {
 function payTheMan(string) {
   if (string === "push") {
     // console.log("i ran push")
-    bet += count;
+    count += bet;
     counter.textContent = count;
     localStorage.setItem("stack", count);
   } else if (string === "blackJack") {
@@ -447,6 +447,10 @@ function playerSplit() {
   } else {
     currentHandRowEl.empty(); //clear current hand row if 2nd or 3rd split
   }
+  // deduct chips
+  count -= bet;
+  counter.textContent = count; 
+  localStorage.setItem("stack", count);
   //append row for other hands
   otherHandsRowEl = $("<div>");
   otherHandsRowEl.addClass("d-flex flex-row");
@@ -483,6 +487,10 @@ function playerSplit() {
 function doubleDown() {
   console.log("Double down dummy!");
   // double bet
+  count -= bet;
+  counter.textContent = count;
+  localStorage.setItem("stack", count);
+  bet *= 2;
 
   // draw only one card
   drawCard(wherePlay, drawnCard, playerCount, drawnCard);

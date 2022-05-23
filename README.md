@@ -38,4 +38,4 @@
 
 https://caseysmiller.github.io/bootcapBlackjack/
 
-![AppScreenshot](/assets/photos/Capture.png)
+![AppScreenshot](./assets/photos/Capture.PNG)

@@ -460,7 +460,7 @@ function checkMoreHands() {
     currentHtml = wherePlay.html();
     // copy [0] index from playerOtherHands to playerFirstCard and PlayerSecondCard
     PlayerFirstCard = playerOtherHands[0][0];
-    console.log('playerFirstCard =' PlayerFirstCard);
+    console.log('playerFirstCard =' + PlayerFirstCard);
     PlayerSecondCard = playerOtherHands[0][1];
     // run current player cards through useValue function
     useValue(playerCount, PlayerFirstCard, PlayerFirstCard);

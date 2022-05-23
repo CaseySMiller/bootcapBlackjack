@@ -248,7 +248,7 @@ function displayCard(whatCard, whereCard) {
   showThisCard.attr("src", whatCard);
   whereCard.append(cardDiv);
   cardDiv.append(showThisCard);
-}
+};
 
 //function to show dealer cards
 function displayDealerCards() {
@@ -650,6 +650,8 @@ DDmenu2.on("click", function (event) {
   event.stopPropagation;
   $("#jukeboxSrc").remove();
 });
+
+// Daily Motion Api url endings. directs the script into the proper page.
 
 // xuvoto
 // x77age2

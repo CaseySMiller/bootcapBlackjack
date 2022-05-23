@@ -5,10 +5,6 @@ var splitCount = -1;
 var unplayedHands = -1;
 var allPlayerCounts = [];
 var hasAce = 0;
-var loser = true;
-var blackJack = true;
-var push = true;
-var winner = true;
 var playerOtherHands = [
   [
     { value: 0, img: "", raw: "" },
@@ -83,23 +79,26 @@ var deck_5 = $("#deck_5");
 var deck_6 = $("#deck_6");
 
 // variables for the chips and betting
+var playAgainButton = $("#playAgain");
 var confirmButton = $("#confirmWager");
 var chipCount = $("#counter");
 var increaseButton = $("#add");
 var decreaseButton = $("#subtract");
 var currentWagerAmount = $("#bet");
 var getNewChips = $("#newChips");
-// var count = 0;
-var stack = localStorage.getItem("stack");
+var count = localStorage.getItem("stack");
 var bet = 0;
+// var count = 0;
 
 // setting local storage
-count = localStorage.getItem("stack");
-chipCount.text(`${count} chips`);
+// count = localStorage.getItem("stack");
+if (count) {
+  chipCount.text(`${count} chips`);
+}
 
 // request a new stack of chips
 getNewChips.on("click", function () {
-  if (count === 0) {
+  if (count === 0 || !count) {
     count = 50;
     localStorage.setItem("stack", count);
     chipCount.text(`${count} chips`);
@@ -136,28 +135,45 @@ decreaseButton.on("click", function () {
   }
 });
 
-function payTheMan() {
-  alert('i just ran')
-  if (push) {
-    console.log("i ran push")
+function payTheMan(string) {
+  if (string === "push") {
+    // console.log("i ran push")
     bet += count;
     counter.textContent = count;
     localStorage.setItem("stack", count);
-  } else if (blackJack) {
-    console.log("i ran blackjack")
-    (bet * 2.5) + count;
+  } else if (string === "blackJack") {
+    // console.log("i ran blackjack")
+    count = bet * 2.5 + count;
     counter.textContent = count;
     localStorage.setItem("stack", count);
-  } else if (winner) {
-    console.log("i ran winner")
-    (bet * 2) + count;
+  } else if (string === "winner") {
+    // console.log("i ran winner")
+    count = bet * 2 + count;
     counter.textContent = count;
     localStorage.setItem("stack", count);
   } else {
-    console.log("i ran lost")
+    console.log("i ran lost");
     count;
   }
+  var btn = document.createElement("button");
+  btn.innerHTML = "Click to Play Again";
+  btn.onclick = function () {
+    window.location.reload();
+  };
+  document.body.appendChild(btn);
 }
+
+// function restartGame() {
+//   displayDealerCards();
+//   openingDeal();
+//   var dealerCount = { val: 0 };
+//   var playerCount = { val: 0 };
+//   var splitCount = -1;
+//   var unplayedHands = -1;
+//   var allPlayerCounts = [];
+//   var hasAce = 0;
+//   allPlayerCounts = [];
+// }
 
 confirmButton.on("click", function (event) {
   event.stopPropagation();
@@ -517,19 +533,19 @@ function winLossCheck() {
     if (allPlayerCounts[i] === dealerCount.val) {
       console.log("Hand " + x + ": Push");
       // return players wager
-      return payTheMan(push);
+      return payTheMan("push");
     } else if (allPlayerCounts[i] == "blackJack") {
       console.log("Player has Blackjack!!");
       // add player wager * 2.5 to chips
-      return payTheMan(blackJack);
+      return payTheMan("blackJack");
     } else if (allPlayerCounts[i] > dealerCount.val) {
       console.log("Hand " + x + ": Player wins");
       // add player wager * 2 back to chips
-      return payTheMan(winner);
+      return payTheMan("winner");
     } else {
       console.log("Hand " + x + ": dealer wins");
       // player doesnt get chips back -- start new hand
-      return payTheMan(loser);
+      return payTheMan("loser");
     }
   }
 }

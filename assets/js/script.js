@@ -24,7 +24,7 @@ var playerOtherHands = [
 // we will need to populate them from the draw card function
 var faceDownCard = {
   value: 0,
-  img: "http://clipart-library.com/images/8cEbeEMLi.png",
+  img: "assets/images/8cEbeEMLi.png",
 };
 var drawnCard = {
   value: 10,
